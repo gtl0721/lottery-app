@@ -7,14 +7,15 @@ No framework, backend, database, or deployment is required.
 ## Features
 
 - Number pool: `1` to `36`.
-- Draws `6` unique numbers each time.
+- Each round draws `6` unique numbers.
+- Each button click reveals one number, so a full round takes 6 clicks.
 - Supports random draw.
 - Supports manually assigned draw numbers, for example: `3,8,12,19,25,36`.
 - Manual numbers are validated:
   - exactly 6 numbers
   - each number must be between 1 and 36
   - duplicate numbers are not allowed
-- Draw button is locked while drawing.
+- Draw button is locked while each ball is animating.
 - Final result is sorted from small to large.
 - Shows `恭喜得獎者` after the draw is complete.
 - The lottery machine contains all `01` to `36` balls.
@@ -58,16 +59,17 @@ http://127.0.0.1:5500/index.html
 1. Open the page.
 2. Press `F11` in the browser for full screen.
 3. Keep the admin panel hidden before showing guests.
-4. Click `開始開獎` to demo a random draw.
-5. Press `M` to show the admin panel if you want to demo assigned numbers.
-6. Enter assigned numbers, for example:
+4. Click `開始開獎` to reveal the first random number.
+5. Continue clicking the button to reveal one number at a time until all 6 numbers are shown.
+6. Press `M` to show the admin panel if you want to demo assigned numbers.
+7. Enter assigned numbers, for example:
 
 ```text
 3,8,12,19,25,36
 ```
 
-7. Press `M` again to hide the admin panel.
-8. Click `開始開獎`; the page will draw the assigned numbers.
+8. Press `M` again to hide the admin panel.
+9. Click the draw button 6 times; the page will reveal the assigned numbers one by one.
 
 ## Admin Mode
 

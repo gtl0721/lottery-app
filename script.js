@@ -11,6 +11,12 @@ const poolBalls = document.querySelector("#poolBalls");
 const message = document.querySelector("#message");
 const winnerTitle = document.querySelector("#winnerTitle");
 const balls = Array.from(document.querySelectorAll(".lotto-ball"));
+const drawState = {
+  numbers: [],
+  nextIndex: 0,
+  isActive: false,
+  isAnimating: false,
+};
 const poolPhysics = {
   balls: [],
   width: 0,
@@ -264,53 +270,76 @@ function resetDrawState() {
   });
 }
 
-async function revealNumbers(numbers) {
-  for (let index = 0; index < numbers.length; index += 1) {
-    const ball = balls[index];
-    ball.classList.remove("rolling", "settled");
-    void ball.offsetWidth;
-    ball.classList.add("rolling");
+async function revealOneNumber(index, number) {
+  const ball = balls[index];
+  ball.classList.remove("rolling", "settled");
+  void ball.offsetWidth;
+  ball.classList.add("rolling");
 
-    const spinFrames = 12;
-    for (let frame = 0; frame < spinFrames; frame += 1) {
-      ball.textContent = formatNumber(Math.floor(Math.random() * POOL_MAX) + 1);
-      await wait(BALL_DELAY_MS / spinFrames);
-    }
-
-    ball.textContent = formatNumber(numbers[index]);
-    ball.classList.remove("rolling");
-    ball.classList.add("settled");
-    await wait(220);
+  const spinFrames = 12;
+  for (let frame = 0; frame < spinFrames; frame += 1) {
+    ball.textContent = formatNumber(Math.floor(Math.random() * POOL_MAX) + 1);
+    await wait(BALL_DELAY_MS / spinFrames);
   }
+
+  ball.textContent = formatNumber(number);
+  ball.classList.remove("rolling");
+  ball.classList.add("settled");
+  await wait(220);
 }
 
 async function startDraw() {
-  const parsed = parseAdminNumbers(adminInput.value);
-
-  if (parsed.mode === "invalid") {
-    setMessage(parsed.error, "error");
+  if (drawState.isAnimating) {
     return;
   }
 
-  const numbers = parsed.mode === "admin" ? parsed.numbers : getRandomNumbers();
+  if (!drawState.isActive || drawState.nextIndex >= DRAW_COUNT) {
+    const parsed = parseAdminNumbers(adminInput.value);
 
+    if (parsed.mode === "invalid") {
+      setMessage(parsed.error, "error");
+      return;
+    }
+
+    drawState.numbers = parsed.mode === "admin" ? parsed.numbers : getRandomNumbers();
+    drawState.nextIndex = 0;
+    drawState.isActive = true;
+    resetDrawState();
+    setMessage(parsed.mode === "admin" ? "管理模式啟用，將依指定號碼逐顆開獎。" : "未設定指定號碼，系統將隨機逐顆開獎。", "success");
+  }
+
+  const currentIndex = drawState.nextIndex;
+  const currentNumber = drawState.numbers[currentIndex];
+
+  drawState.isAnimating = true;
   drawButton.disabled = true;
   adminInput.disabled = true;
+  drawButton.textContent = "開獎中...";
   poolPhysics.speedBoost = 1.65;
   machineRing.classList.add("is-drawing");
-  resetDrawState();
-  setMessage(parsed.mode === "admin" ? "管理模式啟用，將依指定號碼開獎。" : "未設定指定號碼，系統隨機開獎中。", "success");
+  setMessage(`第 ${currentIndex + 1} 顆號碼開獎中。`, "success");
 
-  await revealNumbers(numbers);
+  await revealOneNumber(currentIndex, currentNumber);
 
-  machineRing.classList.remove("is-drawing");
-  poolPhysics.speedBoost = 1;
-  winnerTitle.textContent = "恭喜得獎者";
-  winnerTitle.classList.add("is-complete");
-  setMessage(`開獎完成：${numbers.map(formatNumber).join("、")}`, "success");
+  drawState.nextIndex += 1;
+  drawState.isAnimating = false;
 
+  if (drawState.nextIndex >= DRAW_COUNT) {
+    machineRing.classList.remove("is-drawing");
+    poolPhysics.speedBoost = 1;
+    winnerTitle.textContent = "恭喜得獎者";
+    winnerTitle.classList.add("is-complete");
+    setMessage(`開獎完成：${drawState.numbers.map(formatNumber).join("、")}`, "success");
+    drawButton.textContent = "重新開獎";
+    drawButton.disabled = false;
+    adminInput.disabled = false;
+    drawButton.focus();
+    return;
+  }
+
+  setMessage(`已開出 ${drawState.nextIndex} 顆，請按下一顆。`, "success");
+  drawButton.textContent = `開下一顆 (${drawState.nextIndex + 1}/6)`;
   drawButton.disabled = false;
-  adminInput.disabled = false;
   drawButton.focus();
 }
 
