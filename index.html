@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>金彩 6/36 開獎直播</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="stage" aria-labelledby="app-title">
+    <section class="draw-panel">
+      <header class="broadcast-header">
+        <div>
+          <p class="kicker">LIVE DRAW</p>
+          <h1 id="app-title">金彩 6/36 開獎直播</h1>
+        </div>
+        <div class="status-light" aria-label="現場直播中">
+          <span></span>
+          直播中
+        </div>
+      </header>
+
+      <div class="machine" aria-label="樂透開獎機">
+        <div class="machine-glow"></div>
+        <div class="drum">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="mini-ball mini-ball-a">6</div>
+          <div class="mini-ball mini-ball-b">18</div>
+          <div class="mini-ball mini-ball-c">29</div>
+        </div>
+      </div>
+
+      <section class="balls-board" aria-live="polite" aria-label="開獎號碼">
+        <div class="lotto-ball" data-slot="1">--</div>
+        <div class="lotto-ball" data-slot="2">--</div>
+        <div class="lotto-ball" data-slot="3">--</div>
+        <div class="lotto-ball" data-slot="4">--</div>
+        <div class="lotto-ball" data-slot="5">--</div>
+        <div class="lotto-ball" data-slot="6">--</div>
+      </section>
+
+      <div class="controls">
+        <button id="drawButton" class="draw-button" type="button">
+          <span class="button-icon" aria-hidden="true"></span>
+          開始開獎
+        </button>
+      </div>
+    </section>
+
+    <aside class="admin-panel" aria-labelledby="admin-title">
+      <div class="admin-heading">
+        <p class="kicker">CONTROL ROOM</p>
+        <h2 id="admin-title">管理模式</h2>
+      </div>
+      <label for="adminNumbers">指定開獎號碼</label>
+      <input
+        id="adminNumbers"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="例如 3,8,12,19,25,36"
+      >
+      <p id="message" class="message" role="status">未輸入合法指定號碼時，系統將隨機開獎。</p>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
