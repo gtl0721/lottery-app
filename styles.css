@@ -193,19 +193,19 @@ h2 {
 
 .pool-balls {
   position: absolute;
-  inset: 28px;
+  inset: 10px;
+  overflow: visible;
 }
 
 .pool-ball {
   width: clamp(32px, 4.4vw, 52px);
   height: clamp(32px, 4.4vw, 52px);
   position: absolute;
-  left: var(--x);
-  top: var(--y);
+  left: 50%;
+  top: 50%;
   font-size: clamp(0.72rem, 1.4vw, 1.05rem);
   transform: translate(-50%, -50%);
-  animation: poolRoll var(--duration) ease-in-out infinite;
-  animation-delay: var(--delay);
+  will-change: transform;
   box-shadow:
     inset -8px -10px 16px rgba(66, 20, 0, 0.34),
     inset 6px 7px 12px rgba(255, 255, 255, 0.32),
@@ -223,7 +223,6 @@ h2 {
 }
 
 .machine-ring.is-drawing .pool-ball {
-  animation-duration: calc(var(--duration) * 0.55);
   filter: saturate(1.18) brightness(1.04);
 }
 
@@ -375,25 +374,6 @@ input:focus {
   }
 }
 
-@keyframes poolRoll {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
-  }
-
-  33% {
-    transform: translate(-50%, -50%) translate(var(--move-a), var(--move-b)) rotate(138deg);
-  }
-
-  66% {
-    transform: translate(-50%, -50%) translate(var(--move-c), var(--move-d)) rotate(292deg);
-  }
-
-  50% {
-    z-index: 2;
-  }
-}
-
 @keyframes ballReveal {
   0% {
     opacity: 0;
@@ -465,7 +445,7 @@ input:focus {
   }
 
   .pool-balls {
-    inset: 24px;
+    inset: 8px;
   }
 
   .balls-board {

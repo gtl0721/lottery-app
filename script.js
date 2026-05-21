@@ -11,6 +11,16 @@ const poolBalls = document.querySelector("#poolBalls");
 const message = document.querySelector("#message");
 const winnerTitle = document.querySelector("#winnerTitle");
 const balls = Array.from(document.querySelectorAll(".lotto-ball"));
+const poolPhysics = {
+  balls: [],
+  width: 0,
+  height: 0,
+  centerX: 0,
+  centerY: 0,
+  radius: 0,
+  lastTime: 0,
+  speedBoost: 1,
+};
 
 function setMessage(text, type = "") {
   message.textContent = text;
@@ -22,36 +32,149 @@ function formatNumber(number) {
 }
 
 function renderPoolBalls() {
-  const positions = [
-    [50, 18], [36, 22], [64, 22], [24, 31], [48, 31], [72, 31],
-    [34, 40], [58, 40], [82, 41], [18, 48], [44, 49], [68, 49],
-    [28, 58], [52, 58], [76, 58], [38, 67], [62, 67], [50, 76],
-    [50, 42], [60, 30], [40, 30], [30, 47], [70, 47], [42, 55],
-    [58, 55], [22, 64], [78, 65], [32, 73], [68, 73], [50, 64],
-    [25, 39], [75, 39], [39, 80], [61, 80], [50, 52], [50, 88],
-  ];
-
   const fragment = document.createDocumentFragment();
+  poolPhysics.balls = [];
 
   for (let number = POOL_MIN; number <= POOL_MAX; number += 1) {
     const ball = document.createElement("span");
-    const [x, y] = positions[number - 1];
-    const direction = number % 2 === 0 ? 1 : -1;
 
     ball.className = "pool-ball";
     ball.textContent = formatNumber(number);
-    ball.style.setProperty("--x", `${x}%`);
-    ball.style.setProperty("--y", `${y}%`);
-    ball.style.setProperty("--duration", `${2.2 + (number % 7) * 0.18}s`);
-    ball.style.setProperty("--delay", `${number * -0.09}s`);
-    ball.style.setProperty("--move-a", `${direction * (8 + (number % 5) * 2)}px`);
-    ball.style.setProperty("--move-b", `${-7 - (number % 4) * 3}px`);
-    ball.style.setProperty("--move-c", `${direction * -1 * (7 + (number % 6) * 2)}px`);
-    ball.style.setProperty("--move-d", `${6 + (number % 5) * 2}px`);
     fragment.appendChild(ball);
+    poolPhysics.balls.push({
+      element: ball,
+      number,
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      radius: 22,
+      rotation: 0,
+    });
   }
 
   poolBalls.replaceChildren(fragment);
+  updatePoolLayout();
+  window.requestAnimationFrame(animatePoolBalls);
+}
+
+function updatePoolLayout() {
+  const bounds = poolBalls.getBoundingClientRect();
+  poolPhysics.width = bounds.width;
+  poolPhysics.height = bounds.height;
+  poolPhysics.centerX = bounds.width / 2;
+  poolPhysics.centerY = bounds.height / 2;
+  poolPhysics.radius = Math.min(bounds.width, bounds.height) / 2;
+
+  poolPhysics.balls.forEach((ball, index) => {
+    const size = ball.element.offsetWidth || 44;
+    const angle = (index / poolPhysics.balls.length) * Math.PI * 2;
+    const layer = index % 3;
+    const distance = poolPhysics.radius * (0.26 + layer * 0.2);
+
+    ball.radius = size / 2;
+    ball.x = poolPhysics.centerX + Math.cos(angle) * distance;
+    ball.y = poolPhysics.centerY + Math.sin(angle) * distance;
+    ball.vx = Math.cos(angle + Math.PI / 2) * (44 + (index % 5) * 8);
+    ball.vy = Math.sin(angle + Math.PI / 2) * (44 + (index % 7) * 7);
+  });
+}
+
+function keepBallInsideCircle(ball) {
+  const dx = ball.x - poolPhysics.centerX;
+  const dy = ball.y - poolPhysics.centerY;
+  const distance = Math.hypot(dx, dy) || 1;
+  const limit = poolPhysics.radius - ball.radius - 2;
+
+  if (distance <= limit) {
+    return;
+  }
+
+  const normalX = dx / distance;
+  const normalY = dy / distance;
+  const velocityAlongNormal = ball.vx * normalX + ball.vy * normalY;
+
+  ball.x = poolPhysics.centerX + normalX * limit;
+  ball.y = poolPhysics.centerY + normalY * limit;
+
+  if (velocityAlongNormal > 0) {
+    ball.vx -= 1.92 * velocityAlongNormal * normalX;
+    ball.vy -= 1.92 * velocityAlongNormal * normalY;
+  }
+}
+
+function resolveBallCollisions() {
+  for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
+    for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
+      const first = poolPhysics.balls[firstIndex];
+      const second = poolPhysics.balls[secondIndex];
+      const dx = second.x - first.x;
+      const dy = second.y - first.y;
+      const distance = Math.hypot(dx, dy) || 1;
+      const minDistance = first.radius + second.radius - 3;
+
+      if (distance >= minDistance) {
+        continue;
+      }
+
+      const normalX = dx / distance;
+      const normalY = dy / distance;
+      const overlap = minDistance - distance;
+      const relativeVelocityX = second.vx - first.vx;
+      const relativeVelocityY = second.vy - first.vy;
+      const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY;
+
+      first.x -= normalX * overlap * 0.5;
+      first.y -= normalY * overlap * 0.5;
+      second.x += normalX * overlap * 0.5;
+      second.y += normalY * overlap * 0.5;
+
+      if (velocityAlongNormal < 0) {
+        const impulse = -velocityAlongNormal * 0.84;
+        first.vx -= impulse * normalX;
+        first.vy -= impulse * normalY;
+        second.vx += impulse * normalX;
+        second.vy += impulse * normalY;
+      }
+    }
+  }
+}
+
+function animatePoolBalls(time) {
+  if (!poolPhysics.lastTime) {
+    poolPhysics.lastTime = time;
+  }
+
+  const deltaSeconds = Math.min((time - poolPhysics.lastTime) / 1000, 0.032);
+  poolPhysics.lastTime = time;
+
+  poolPhysics.balls.forEach((ball, index) => {
+    const dx = ball.x - poolPhysics.centerX;
+    const dy = ball.y - poolPhysics.centerY;
+    const tangentX = -dy;
+    const tangentY = dx;
+    const tangentLength = Math.hypot(tangentX, tangentY) || 1;
+    const swirl = 26 * poolPhysics.speedBoost;
+
+    ball.vx += (tangentX / tangentLength) * swirl * deltaSeconds;
+    ball.vy += (tangentY / tangentLength) * swirl * deltaSeconds;
+    ball.vy += Math.sin(time / 420 + index) * 7 * deltaSeconds;
+    ball.x += ball.vx * deltaSeconds * poolPhysics.speedBoost;
+    ball.y += ball.vy * deltaSeconds * poolPhysics.speedBoost;
+    ball.vx *= 0.997;
+    ball.vy *= 0.997;
+
+    keepBallInsideCircle(ball);
+  });
+
+  resolveBallCollisions();
+
+  poolPhysics.balls.forEach((ball) => {
+    ball.rotation += (ball.vx + ball.vy) * 0.018 * poolPhysics.speedBoost;
+    ball.element.style.transform = `translate(-50%, -50%) translate(${ball.x - poolPhysics.centerX}px, ${ball.y - poolPhysics.centerY}px) rotate(${ball.rotation}deg)`;
+  });
+
+  window.requestAnimationFrame(animatePoolBalls);
 }
 
 function parseAdminNumbers(value) {
@@ -141,6 +264,7 @@ async function startDraw() {
 
   drawButton.disabled = true;
   adminInput.disabled = true;
+  poolPhysics.speedBoost = 1.8;
   machineRing.classList.add("is-drawing");
   resetDrawState();
   setMessage(parsed.mode === "admin" ? "管理模式啟用，將依指定號碼開獎。" : "未設定指定號碼，系統隨機開獎中。", "success");
@@ -148,6 +272,7 @@ async function startDraw() {
   await revealNumbers(numbers);
 
   machineRing.classList.remove("is-drawing");
+  poolPhysics.speedBoost = 1;
   winnerTitle.textContent = "恭喜得獎者";
   winnerTitle.classList.add("is-complete");
   setMessage(`開獎完成：${numbers.map(formatNumber).join("、")}`, "success");
@@ -167,6 +292,7 @@ function toggleAdminPanel() {
 
 drawButton.addEventListener("click", startDraw);
 renderPoolBalls();
+window.addEventListener("resize", updatePoolLayout);
 
 document.addEventListener("keydown", (event) => {
   if (event.key.toLowerCase() === "m") {
