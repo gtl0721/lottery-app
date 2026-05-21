@@ -113,7 +113,7 @@ function keepBallInsideCircle(ball) {
 }
 
 function resolveBallCollisions() {
-  for (let pass = 0; pass < 2; pass += 1) {
+  for (let pass = 0; pass < 5; pass += 1) {
     for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
       for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
         const first = poolPhysics.balls[firstIndex];
@@ -121,7 +121,7 @@ function resolveBallCollisions() {
         let dx = second.x - first.x;
         let dy = second.y - first.y;
         let distance = Math.hypot(dx, dy);
-        const minDistance = first.radius + second.radius + 1;
+        const minDistance = first.radius + second.radius + 2;
 
         if (distance >= minDistance) {
           continue;
@@ -145,6 +145,8 @@ function resolveBallCollisions() {
         first.y -= normalY * overlap * 0.52;
         second.x += normalX * overlap * 0.52;
         second.y += normalY * overlap * 0.52;
+        keepBallInsideCircle(first);
+        keepBallInsideCircle(second);
 
         if (velocityAlongNormal < 0) {
           const restitution = 0.96;
@@ -209,16 +211,24 @@ function animatePoolBalls(time) {
     ball.vy -= (360 + index % 5 * 24) * jetPower * deltaSeconds * poolPhysics.speedBoost;
     ball.vx += Math.sin(time / 95 + index * 2.4) * 20 * deltaSeconds;
     ball.vy += Math.cos(time / 105 + index * 1.7) * 18 * deltaSeconds;
-    ball.x += ball.vx * deltaSeconds * poolPhysics.speedBoost;
-    ball.y += ball.vy * deltaSeconds * poolPhysics.speedBoost;
     ball.vx *= 0.992;
     ball.vy *= 0.992;
 
-    limitBallSpeed(ball, 320 * poolPhysics.speedBoost);
-    keepBallInsideCircle(ball);
+    limitBallSpeed(ball, 230 * poolPhysics.speedBoost);
   });
 
-  resolveBallCollisions();
+  const steps = poolPhysics.speedBoost > 1.2 ? 5 : 4;
+  const stepSeconds = deltaSeconds / steps;
+
+  for (let step = 0; step < steps; step += 1) {
+    poolPhysics.balls.forEach((ball) => {
+      ball.x += ball.vx * stepSeconds * poolPhysics.speedBoost;
+      ball.y += ball.vy * stepSeconds * poolPhysics.speedBoost;
+      keepBallInsideCircle(ball);
+    });
+
+    resolveBallCollisions();
+  }
 
   poolPhysics.balls.forEach((ball) => {
     ball.rotation += (ball.vx + ball.vy) * 0.018 * poolPhysics.speedBoost;
@@ -315,7 +325,7 @@ async function startDraw() {
 
   drawButton.disabled = true;
   adminInput.disabled = true;
-  poolPhysics.speedBoost = 1.8;
+  poolPhysics.speedBoost = 1.45;
   machineRing.classList.add("is-drawing");
   resetDrawState();
   setMessage(parsed.mode === "admin" ? "管理模式啟用，將依指定號碼開獎。" : "未設定指定號碼，系統隨機開獎中。", "success");
