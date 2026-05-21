@@ -176,7 +176,7 @@ h2 {
   animation-direction: reverse;
 }
 
-.small-ball,
+.pool-ball,
 .lotto-ball {
   border-radius: 50%;
   display: grid;
@@ -191,35 +191,40 @@ h2 {
     0 16px 26px rgba(0, 0, 0, 0.34);
 }
 
-.small-ball {
-  width: 68px;
-  height: 68px;
+.pool-balls {
   position: absolute;
-  font-size: 1.55rem;
+  inset: 28px;
 }
 
-.small-ball-a {
-  top: 62px;
-  left: 72px;
-  animation: floatA 3.4s ease-in-out infinite;
+.pool-ball {
+  width: clamp(32px, 4.4vw, 52px);
+  height: clamp(32px, 4.4vw, 52px);
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  font-size: clamp(0.72rem, 1.4vw, 1.05rem);
+  transform: translate(-50%, -50%);
+  animation: poolRoll var(--duration) ease-in-out infinite;
+  animation-delay: var(--delay);
+  box-shadow:
+    inset -8px -10px 16px rgba(66, 20, 0, 0.34),
+    inset 6px 7px 12px rgba(255, 255, 255, 0.32),
+    0 9px 16px rgba(0, 0, 0, 0.3);
 }
 
-.small-ball-b {
-  top: 76px;
-  right: 70px;
-  animation: floatB 3s ease-in-out infinite;
+.pool-ball:nth-child(3n) {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 9%, #ffe9a7 17%, #f1bd38 46%, #955712 100%);
 }
 
-.small-ball-c {
-  bottom: 66px;
-  left: 112px;
-  animation: floatC 3.6s ease-in-out infinite;
+.pool-ball:nth-child(4n) {
+  background:
+    radial-gradient(circle at 28% 22%, #fff 0 9%, #fff1bf 17%, #ffd968 46%, #a66615 100%);
 }
 
-.small-ball-d {
-  right: 110px;
-  bottom: 62px;
-  animation: floatD 3.15s ease-in-out infinite;
+.machine-ring.is-drawing .pool-ball {
+  animation-duration: calc(var(--duration) * 0.55);
+  filter: saturate(1.18) brightness(1.04);
 }
 
 .result-area {
@@ -370,27 +375,22 @@ input:focus {
   }
 }
 
-@keyframes floatA {
-  50% {
-    transform: translate(94px, 108px) rotate(180deg);
+@keyframes poolRoll {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
   }
-}
 
-@keyframes floatB {
-  50% {
-    transform: translate(-132px, 114px) rotate(-210deg);
+  33% {
+    transform: translate(-50%, -50%) translate(var(--move-a), var(--move-b)) rotate(138deg);
   }
-}
 
-@keyframes floatC {
-  50% {
-    transform: translate(118px, -116px) rotate(220deg);
+  66% {
+    transform: translate(-50%, -50%) translate(var(--move-c), var(--move-d)) rotate(292deg);
   }
-}
 
-@keyframes floatD {
   50% {
-    transform: translate(-100px, -130px) rotate(-180deg);
+    z-index: 2;
   }
 }
 
@@ -464,10 +464,8 @@ input:focus {
     width: min(320px, 78vw);
   }
 
-  .small-ball {
-    width: 48px;
-    height: 48px;
-    font-size: 1rem;
+  .pool-balls {
+    inset: 24px;
   }
 
   .balls-board {
