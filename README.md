@@ -97,3 +97,7 @@ If TortoiseGit reports a safe directory error:
 ```bash
 git config --global --add safe.directory D:/lottery-app
 ```
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
