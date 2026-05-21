@@ -1,16 +1,22 @@
 const POOL_MIN = 1;
 const POOL_MAX = 36;
 const DRAW_COUNT = 6;
-const BALL_DELAY_MS = 700;
+const BALL_DELAY_MS = 760;
 
 const drawButton = document.querySelector("#drawButton");
 const adminInput = document.querySelector("#adminNumbers");
+const adminPanel = document.querySelector("#adminPanel");
 const message = document.querySelector("#message");
+const winnerTitle = document.querySelector("#winnerTitle");
 const balls = Array.from(document.querySelectorAll(".lotto-ball"));
 
 function setMessage(text, type = "") {
   message.textContent = text;
   message.className = `message ${type}`.trim();
+}
+
+function formatNumber(number) {
+  return String(number).padStart(2, "0");
 }
 
 function parseAdminNumbers(value) {
@@ -24,15 +30,15 @@ function parseAdminNumbers(value) {
   const numbers = parts.map((part) => Number(part));
 
   if (parts.length !== DRAW_COUNT || numbers.some((number) => !Number.isInteger(number))) {
-    return { mode: "invalid", error: "指定號碼必須剛好是 6 個整數。" };
+    return { mode: "invalid", error: "手動指定號碼必須剛好是 6 個整數。" };
   }
 
   if (numbers.some((number) => number < POOL_MIN || number > POOL_MAX)) {
-    return { mode: "invalid", error: "指定號碼範圍必須介於 1 到 36。" };
+    return { mode: "invalid", error: "手動指定號碼範圍必須介於 1 到 36。" };
   }
 
   if (new Set(numbers).size !== DRAW_COUNT) {
-    return { mode: "invalid", error: "指定號碼不可重複。" };
+    return { mode: "invalid", error: "手動指定號碼不可重複。" };
   }
 
   return {
@@ -58,28 +64,33 @@ function wait(milliseconds) {
   });
 }
 
-function resetBalls() {
+function resetDrawState() {
+  winnerTitle.textContent = "幸福號碼準備中";
+  winnerTitle.classList.remove("is-complete");
+
   balls.forEach((ball) => {
     ball.textContent = "--";
-    ball.classList.remove("rolling");
+    ball.classList.remove("rolling", "settled");
   });
 }
 
 async function revealNumbers(numbers) {
   for (let index = 0; index < numbers.length; index += 1) {
     const ball = balls[index];
-    ball.classList.remove("rolling");
+    ball.classList.remove("rolling", "settled");
     void ball.offsetWidth;
     ball.classList.add("rolling");
 
-    const spinFrames = 10;
+    const spinFrames = 12;
     for (let frame = 0; frame < spinFrames; frame += 1) {
-      ball.textContent = String(Math.floor(Math.random() * POOL_MAX) + 1).padStart(2, "0");
+      ball.textContent = formatNumber(Math.floor(Math.random() * POOL_MAX) + 1);
       await wait(BALL_DELAY_MS / spinFrames);
     }
 
-    ball.textContent = String(numbers[index]).padStart(2, "0");
-    await wait(180);
+    ball.textContent = formatNumber(numbers[index]);
+    ball.classList.remove("rolling");
+    ball.classList.add("settled");
+    await wait(220);
   }
 }
 
@@ -95,15 +106,33 @@ async function startDraw() {
 
   drawButton.disabled = true;
   adminInput.disabled = true;
-  resetBalls();
-  setMessage(parsed.mode === "admin" ? "管理模式啟用，使用指定號碼開獎。" : "未設定指定號碼，系統隨機開獎中。", "success");
+  resetDrawState();
+  setMessage(parsed.mode === "admin" ? "管理模式啟用，將依指定號碼開獎。" : "未設定指定號碼，系統隨機開獎中。", "success");
 
   await revealNumbers(numbers);
 
-  setMessage(`開獎完成：${numbers.map((number) => String(number).padStart(2, "0")).join("、")}`, "success");
+  winnerTitle.textContent = "恭喜得獎者";
+  winnerTitle.classList.add("is-complete");
+  setMessage(`開獎完成：${numbers.map(formatNumber).join("、")}`, "success");
+
   drawButton.disabled = false;
   adminInput.disabled = false;
   drawButton.focus();
 }
 
+function toggleAdminPanel() {
+  adminPanel.classList.toggle("is-hidden");
+
+  if (!adminPanel.classList.contains("is-hidden")) {
+    adminInput.focus();
+  }
+}
+
 drawButton.addEventListener("click", startDraw);
+
+document.addEventListener("keydown", (event) => {
+  if (event.key.toLowerCase() === "m") {
+    event.preventDefault();
+    toggleAdminPanel();
+  }
+});

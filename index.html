@@ -3,65 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>金彩 6/36 開獎直播</title>
+  <title>囍緣樂透 6/36 婚禮開獎</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="stage" aria-labelledby="app-title">
-    <section class="draw-panel">
-      <header class="broadcast-header">
-        <div>
-          <p class="kicker">LIVE DRAW</p>
-          <h1 id="app-title">金彩 6/36 開獎直播</h1>
-        </div>
-        <div class="status-light" aria-label="現場直播中">
-          <span></span>
-          直播中
-        </div>
+  <main class="wedding-stage" aria-labelledby="app-title">
+    <section class="show-area">
+      <header class="ceremony-header">
+        <p class="eyebrow">WEDDING LOTTERY 6/36</p>
+        <h1 id="app-title">囍緣樂透</h1>
+        <p class="subtitle">今晚的幸運，由幸福揭曉</p>
       </header>
 
-      <div class="machine" aria-label="樂透開獎機">
-        <div class="machine-glow"></div>
-        <div class="drum">
-          <div class="orbit orbit-one"></div>
-          <div class="orbit orbit-two"></div>
-          <div class="mini-ball mini-ball-a">6</div>
-          <div class="mini-ball mini-ball-b">18</div>
-          <div class="mini-ball mini-ball-c">29</div>
+      <section class="lottery-machine" aria-label="婚禮樂透開獎機">
+        <div class="machine-ring">
+          <div class="ring-line ring-line-a"></div>
+          <div class="ring-line ring-line-b"></div>
+          <div class="small-ball small-ball-a">囍</div>
+          <div class="small-ball small-ball-b">18</div>
+          <div class="small-ball small-ball-c">29</div>
+          <div class="small-ball small-ball-d">36</div>
         </div>
-      </div>
+      </section>
 
-      <section class="balls-board" aria-live="polite" aria-label="開獎號碼">
-        <div class="lotto-ball" data-slot="1">--</div>
-        <div class="lotto-ball" data-slot="2">--</div>
-        <div class="lotto-ball" data-slot="3">--</div>
-        <div class="lotto-ball" data-slot="4">--</div>
-        <div class="lotto-ball" data-slot="5">--</div>
-        <div class="lotto-ball" data-slot="6">--</div>
+      <section class="result-area" aria-live="polite">
+        <p id="winnerTitle" class="winner-title">幸福號碼準備中</p>
+        <div class="balls-board" aria-label="開獎號碼">
+          <div class="lotto-ball">--</div>
+          <div class="lotto-ball">--</div>
+          <div class="lotto-ball">--</div>
+          <div class="lotto-ball">--</div>
+          <div class="lotto-ball">--</div>
+          <div class="lotto-ball">--</div>
+        </div>
       </section>
 
       <div class="controls">
-        <button id="drawButton" class="draw-button" type="button">
-          <span class="button-icon" aria-hidden="true"></span>
-          開始開獎
-        </button>
+        <button id="drawButton" class="draw-button" type="button">開始開獎</button>
       </div>
     </section>
 
-    <aside class="admin-panel" aria-labelledby="admin-title">
-      <div class="admin-heading">
-        <p class="kicker">CONTROL ROOM</p>
+    <aside id="adminPanel" class="admin-panel is-hidden" aria-labelledby="admin-title">
+      <div>
+        <p class="eyebrow">MANAGER</p>
         <h2 id="admin-title">管理模式</h2>
       </div>
-      <label for="adminNumbers">指定開獎號碼</label>
+      <label for="adminNumbers">手動指定號碼</label>
       <input
         id="adminNumbers"
         type="text"
         inputmode="numeric"
         autocomplete="off"
-        placeholder="例如 3,8,12,19,25,36"
+        placeholder="例如：3,8,12,19,25,36"
       >
-      <p id="message" class="message" role="status">未輸入合法指定號碼時，系統將隨機開獎。</p>
+      <p id="message" class="message" role="status">按 M 可切換管理區顯示或隱藏。</p>
     </aside>
   </main>
 
