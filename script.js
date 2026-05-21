@@ -112,59 +112,35 @@ function keepBallInsideCircle(ball) {
   }
 }
 
-function resolveBallCollisions() {
-  for (let pass = 0; pass < 5; pass += 1) {
-    for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
-      for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
-        const first = poolPhysics.balls[firstIndex];
-        const second = poolPhysics.balls[secondIndex];
-        let dx = second.x - first.x;
-        let dy = second.y - first.y;
-        let distance = Math.hypot(dx, dy);
-        const minDistance = first.radius + second.radius + 2;
+function addSoftBallInteractions() {
+  for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
+    for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
+      const first = poolPhysics.balls[firstIndex];
+      const second = poolPhysics.balls[secondIndex];
+      const dx = second.x - first.x;
+      const dy = second.y - first.y;
+      const distance = Math.hypot(dx, dy) || 1;
+      const influenceDistance = (first.radius + second.radius) * 1.35;
 
-        if (distance >= minDistance) {
-          continue;
-        }
-
-        if (distance < 0.001) {
-          const angle = (firstIndex + secondIndex) * 1.618;
-          dx = Math.cos(angle);
-          dy = Math.sin(angle);
-          distance = 1;
-        }
-
-        const normalX = dx / distance;
-        const normalY = dy / distance;
-        const overlap = minDistance - distance;
-        const relativeVelocityX = second.vx - first.vx;
-        const relativeVelocityY = second.vy - first.vy;
-        const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY;
-
-        first.x -= normalX * overlap * 0.52;
-        first.y -= normalY * overlap * 0.52;
-        second.x += normalX * overlap * 0.52;
-        second.y += normalY * overlap * 0.52;
-        keepBallInsideCircle(first);
-        keepBallInsideCircle(second);
-
-        if (velocityAlongNormal < 0) {
-          const restitution = 0.96;
-          const impulse = -(1 + restitution) * velocityAlongNormal * 0.5;
-          const tangentX = -normalY;
-          const tangentY = normalX;
-          const spinKick = Math.sin(poolPhysics.lastTime / 160 + first.phase + second.phase) * 8;
-
-          first.vx -= impulse * normalX;
-          first.vy -= impulse * normalY;
-          second.vx += impulse * normalX;
-          second.vy += impulse * normalY;
-          first.vx += tangentX * spinKick;
-          first.vy += tangentY * spinKick;
-          second.vx -= tangentX * spinKick;
-          second.vy -= tangentY * spinKick;
-        }
+      if (distance > influenceDistance) {
+        continue;
       }
+
+      const normalX = dx / distance;
+      const normalY = dy / distance;
+      const tangentX = -normalY;
+      const tangentY = normalX;
+      const strength = (1 - distance / influenceDistance) * 10;
+      const spinKick = Math.sin(poolPhysics.lastTime / 140 + first.phase + second.phase) * strength;
+
+      first.vx -= normalX * strength;
+      first.vy -= normalY * strength;
+      second.vx += normalX * strength;
+      second.vy += normalY * strength;
+      first.vx += tangentX * spinKick;
+      first.vy += tangentY * spinKick;
+      second.vx -= tangentX * spinKick;
+      second.vy -= tangentY * spinKick;
     }
   }
 }
@@ -214,21 +190,16 @@ function animatePoolBalls(time) {
     ball.vx *= 0.992;
     ball.vy *= 0.992;
 
-    limitBallSpeed(ball, 230 * poolPhysics.speedBoost);
+    limitBallSpeed(ball, 300 * poolPhysics.speedBoost);
   });
 
-  const steps = poolPhysics.speedBoost > 1.2 ? 5 : 4;
-  const stepSeconds = deltaSeconds / steps;
+  addSoftBallInteractions();
 
-  for (let step = 0; step < steps; step += 1) {
-    poolPhysics.balls.forEach((ball) => {
-      ball.x += ball.vx * stepSeconds * poolPhysics.speedBoost;
-      ball.y += ball.vy * stepSeconds * poolPhysics.speedBoost;
-      keepBallInsideCircle(ball);
-    });
-
-    resolveBallCollisions();
-  }
+  poolPhysics.balls.forEach((ball) => {
+    ball.x += ball.vx * deltaSeconds * poolPhysics.speedBoost;
+    ball.y += ball.vy * deltaSeconds * poolPhysics.speedBoost;
+    keepBallInsideCircle(ball);
+  });
 
   poolPhysics.balls.forEach((ball) => {
     ball.rotation += (ball.vx + ball.vy) * 0.018 * poolPhysics.speedBoost;
@@ -325,7 +296,7 @@ async function startDraw() {
 
   drawButton.disabled = true;
   adminInput.disabled = true;
-  poolPhysics.speedBoost = 1.45;
+  poolPhysics.speedBoost = 1.65;
   machineRing.classList.add("is-drawing");
   resetDrawState();
   setMessage(parsed.mode === "admin" ? "管理模式啟用，將依指定號碼開獎。" : "未設定指定號碼，系統隨機開獎中。", "success");
