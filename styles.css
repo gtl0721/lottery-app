@@ -29,7 +29,8 @@ body {
     radial-gradient(circle at 12% 20%, rgba(216, 23, 44, 0.46), transparent 22rem),
     radial-gradient(circle at 84% 18%, rgba(248, 212, 106, 0.2), transparent 24rem),
     linear-gradient(135deg, #38040a 0%, #850817 46%, #2c0307 100%);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body::before,
@@ -73,7 +74,7 @@ body::after {
   border: 1px solid rgba(255, 228, 156, 0.42);
   border-radius: 8px;
   display: grid;
-  grid-template-rows: auto minmax(250px, 1fr) auto auto;
+  grid-template-rows: auto minmax(220px, 0.9fr) auto auto;
   align-items: center;
   overflow: hidden;
   position: relative;
@@ -117,7 +118,7 @@ p {
 h1 {
   margin-bottom: 8px;
   color: var(--gold-light);
-  font-size: clamp(4rem, 9vw, 8.8rem);
+  font-size: clamp(3.6rem, 7.5vw, 8rem);
   line-height: 0.95;
   font-weight: 950;
   text-shadow:
@@ -139,14 +140,14 @@ h2 {
 }
 
 .lottery-machine {
-  min-height: 300px;
+  min-height: clamp(220px, 34vh, 300px);
   display: grid;
   place-items: center;
   position: relative;
 }
 
 .machine-ring {
-  width: min(440px, 54vh, 78vw);
+  width: min(420px, 46vh, 78vw);
   aspect-ratio: 1;
   border: 14px solid rgba(255, 225, 150, 0.28);
   border-radius: 50%;
@@ -246,7 +247,7 @@ h2 {
 }
 
 .balls-board {
-  width: min(1180px, 100%);
+  width: min(980px, 100%);
   margin: 0 auto;
   padding: clamp(14px, 2vw, 24px);
   border: 1px solid rgba(255, 232, 174, 0.4);
@@ -286,7 +287,7 @@ h2 {
 
 .draw-button {
   min-width: min(380px, 82vw);
-  min-height: 76px;
+  min-height: clamp(60px, 8vh, 76px);
   border: 0;
   border-radius: 999px;
   color: #4b0708;
@@ -413,10 +414,6 @@ input:focus {
 }
 
 @media (max-width: 900px) {
-  body {
-    overflow-y: auto;
-  }
-
   .wedding-stage {
     width: min(100% - 24px, 1500px);
     padding: 12px 0;
@@ -432,6 +429,111 @@ input:focus {
 
   .lottery-machine {
     min-height: 250px;
+  }
+}
+
+@media (max-height: 820px) and (min-width: 901px) {
+  .wedding-stage {
+    width: min(1360px, calc(100vw - 32px));
+    padding: 16px 0;
+  }
+
+  .show-area {
+    min-height: calc(100vh - 32px);
+    padding: clamp(16px, 2.2vw, 28px);
+    grid-template-rows: auto minmax(190px, 0.72fr) auto auto;
+  }
+
+  .show-area::before {
+    inset: 12px;
+  }
+
+  .eyebrow {
+    margin-bottom: 4px;
+    font-size: 0.78rem;
+  }
+
+  h1 {
+    margin-bottom: 4px;
+    font-size: clamp(3.3rem, 6vw, 5.8rem);
+  }
+
+  .subtitle {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+  }
+
+  .lottery-machine {
+    min-height: 210px;
+  }
+
+  .machine-ring {
+    width: min(320px, 38vh, 58vw);
+    border-width: 10px;
+  }
+
+  .ring-line {
+    inset: 42px;
+  }
+
+  .ring-line-b {
+    inset: 76px;
+  }
+
+  .pool-ball {
+    width: clamp(28px, 3.3vw, 42px);
+    height: clamp(28px, 3.3vw, 42px);
+    font-size: 0.78rem;
+  }
+
+  .winner-title {
+    min-height: 42px;
+    margin-bottom: 10px;
+    font-size: clamp(1.35rem, 2.6vw, 2.35rem);
+  }
+
+  .balls-board {
+    width: min(820px, 100%);
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .lotto-ball {
+    font-size: clamp(1.8rem, 3vw, 3.4rem);
+  }
+
+  .controls {
+    margin-top: 14px;
+  }
+
+  .draw-button {
+    min-height: 58px;
+    font-size: 1.28rem;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 901px) {
+  .show-area {
+    grid-template-rows: auto minmax(160px, 0.58fr) auto auto;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 5vw, 4.7rem);
+  }
+
+  .lottery-machine {
+    min-height: 180px;
+  }
+
+  .machine-ring {
+    width: min(270px, 34vh, 48vw);
+  }
+
+  .balls-board {
+    width: min(720px, 100%);
+  }
+
+  .draw-button {
+    min-height: 52px;
   }
 }
 
