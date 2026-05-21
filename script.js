@@ -100,7 +100,7 @@ function wait(milliseconds) {
 }
 
 function resetDrawState() {
-  winnerTitle.textContent = "幸福號碼準備中";
+  winnerTitle.textContent = "中獎號碼";
   winnerTitle.classList.remove("is-complete");
 
   balls.forEach((ball) => {
