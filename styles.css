@@ -193,7 +193,7 @@ h2 {
 
 .pool-balls {
   position: absolute;
-  inset: 10px;
+  inset: 4px;
   overflow: visible;
 }
 
@@ -445,7 +445,7 @@ input:focus {
   }
 
   .pool-balls {
-    inset: 8px;
+    inset: 4px;
   }
 
   .balls-board {

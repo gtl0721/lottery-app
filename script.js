@@ -20,6 +20,7 @@ const poolPhysics = {
   radius: 0,
   lastTime: 0,
   speedBoost: 1,
+  airJetX: 0,
 };
 
 function setMessage(text, type = "") {
@@ -50,6 +51,7 @@ function renderPoolBalls() {
       vy: 0,
       radius: 22,
       rotation: 0,
+      phase: number * 0.73,
     });
   }
 
@@ -65,18 +67,19 @@ function updatePoolLayout() {
   poolPhysics.centerX = bounds.width / 2;
   poolPhysics.centerY = bounds.height / 2;
   poolPhysics.radius = Math.min(bounds.width, bounds.height) / 2;
+  poolPhysics.airJetX = poolPhysics.centerX;
 
   poolPhysics.balls.forEach((ball, index) => {
     const size = ball.element.offsetWidth || 44;
-    const angle = (index / poolPhysics.balls.length) * Math.PI * 2;
-    const layer = index % 3;
-    const distance = poolPhysics.radius * (0.26 + layer * 0.2);
+    const angle = index * 2.3999632297;
+    const distance = poolPhysics.radius * (0.18 + ((index * 17) % 63) / 100);
+    const speed = 72 + (index % 9) * 9;
 
     ball.radius = size / 2;
     ball.x = poolPhysics.centerX + Math.cos(angle) * distance;
     ball.y = poolPhysics.centerY + Math.sin(angle) * distance;
-    ball.vx = Math.cos(angle + Math.PI / 2) * (44 + (index % 5) * 8);
-    ball.vy = Math.sin(angle + Math.PI / 2) * (44 + (index % 7) * 7);
+    ball.vx = Math.cos(angle * 1.7) * speed;
+    ball.vy = Math.sin(angle * 1.3) * speed;
   });
 }
 
@@ -84,7 +87,7 @@ function keepBallInsideCircle(ball) {
   const dx = ball.x - poolPhysics.centerX;
   const dy = ball.y - poolPhysics.centerY;
   const distance = Math.hypot(dx, dy) || 1;
-  const limit = poolPhysics.radius - ball.radius - 2;
+  const limit = poolPhysics.radius - ball.radius - 1;
 
   if (distance <= limit) {
     return;
@@ -98,46 +101,81 @@ function keepBallInsideCircle(ball) {
   ball.y = poolPhysics.centerY + normalY * limit;
 
   if (velocityAlongNormal > 0) {
-    ball.vx -= 1.92 * velocityAlongNormal * normalX;
-    ball.vy -= 1.92 * velocityAlongNormal * normalY;
+    const tangentX = -normalY;
+    const tangentY = normalX;
+    const tangentKick = 18 * Math.sin(ball.phase + poolPhysics.lastTime / 190);
+
+    ball.vx -= 1.86 * velocityAlongNormal * normalX;
+    ball.vy -= 1.86 * velocityAlongNormal * normalY;
+    ball.vx += tangentX * tangentKick;
+    ball.vy += tangentY * tangentKick;
   }
 }
 
 function resolveBallCollisions() {
-  for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
-    for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
-      const first = poolPhysics.balls[firstIndex];
-      const second = poolPhysics.balls[secondIndex];
-      const dx = second.x - first.x;
-      const dy = second.y - first.y;
-      const distance = Math.hypot(dx, dy) || 1;
-      const minDistance = first.radius + second.radius - 3;
+  for (let pass = 0; pass < 2; pass += 1) {
+    for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
+      for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
+        const first = poolPhysics.balls[firstIndex];
+        const second = poolPhysics.balls[secondIndex];
+        let dx = second.x - first.x;
+        let dy = second.y - first.y;
+        let distance = Math.hypot(dx, dy);
+        const minDistance = first.radius + second.radius + 1;
 
-      if (distance >= minDistance) {
-        continue;
-      }
+        if (distance >= minDistance) {
+          continue;
+        }
 
-      const normalX = dx / distance;
-      const normalY = dy / distance;
-      const overlap = minDistance - distance;
-      const relativeVelocityX = second.vx - first.vx;
-      const relativeVelocityY = second.vy - first.vy;
-      const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY;
+        if (distance < 0.001) {
+          const angle = (firstIndex + secondIndex) * 1.618;
+          dx = Math.cos(angle);
+          dy = Math.sin(angle);
+          distance = 1;
+        }
 
-      first.x -= normalX * overlap * 0.5;
-      first.y -= normalY * overlap * 0.5;
-      second.x += normalX * overlap * 0.5;
-      second.y += normalY * overlap * 0.5;
+        const normalX = dx / distance;
+        const normalY = dy / distance;
+        const overlap = minDistance - distance;
+        const relativeVelocityX = second.vx - first.vx;
+        const relativeVelocityY = second.vy - first.vy;
+        const velocityAlongNormal = relativeVelocityX * normalX + relativeVelocityY * normalY;
 
-      if (velocityAlongNormal < 0) {
-        const impulse = -velocityAlongNormal * 0.84;
-        first.vx -= impulse * normalX;
-        first.vy -= impulse * normalY;
-        second.vx += impulse * normalX;
-        second.vy += impulse * normalY;
+        first.x -= normalX * overlap * 0.52;
+        first.y -= normalY * overlap * 0.52;
+        second.x += normalX * overlap * 0.52;
+        second.y += normalY * overlap * 0.52;
+
+        if (velocityAlongNormal < 0) {
+          const restitution = 0.96;
+          const impulse = -(1 + restitution) * velocityAlongNormal * 0.5;
+          const tangentX = -normalY;
+          const tangentY = normalX;
+          const spinKick = Math.sin(poolPhysics.lastTime / 160 + first.phase + second.phase) * 8;
+
+          first.vx -= impulse * normalX;
+          first.vy -= impulse * normalY;
+          second.vx += impulse * normalX;
+          second.vy += impulse * normalY;
+          first.vx += tangentX * spinKick;
+          first.vy += tangentY * spinKick;
+          second.vx -= tangentX * spinKick;
+          second.vy -= tangentY * spinKick;
+        }
       }
     }
   }
+}
+
+function limitBallSpeed(ball, maxSpeed) {
+  const speed = Math.hypot(ball.vx, ball.vy);
+
+  if (speed <= maxSpeed) {
+    return;
+  }
+
+  ball.vx = (ball.vx / speed) * maxSpeed;
+  ball.vy = (ball.vy / speed) * maxSpeed;
 }
 
 function animatePoolBalls(time) {
@@ -147,23 +185,36 @@ function animatePoolBalls(time) {
 
   const deltaSeconds = Math.min((time - poolPhysics.lastTime) / 1000, 0.032);
   poolPhysics.lastTime = time;
+  poolPhysics.airJetX = poolPhysics.centerX + Math.sin(time / 620) * poolPhysics.radius * 0.34;
 
   poolPhysics.balls.forEach((ball, index) => {
     const dx = ball.x - poolPhysics.centerX;
     const dy = ball.y - poolPhysics.centerY;
-    const tangentX = -dy;
-    const tangentY = dx;
-    const tangentLength = Math.hypot(tangentX, tangentY) || 1;
-    const swirl = 26 * poolPhysics.speedBoost;
+    const distanceFromCenter = Math.hypot(dx, dy) || 1;
+    const nozzleDx = ball.x - poolPhysics.airJetX;
+    const nozzleDy = ball.y - (poolPhysics.centerY + poolPhysics.radius * 0.68);
+    const nozzleDistance = Math.hypot(nozzleDx, nozzleDy) || 1;
+    const jetReach = poolPhysics.radius * 0.72;
+    const jetPower = Math.max(0, 1 - nozzleDistance / jetReach);
+    const centerPull = 18 * (distanceFromCenter / poolPhysics.radius);
+    const turbulenceX = Math.sin(time / 180 + ball.phase * 3.1) * 72;
+    const turbulenceY = Math.cos(time / 230 + ball.phase * 2.7) * 58;
+    const sidePulse = Math.sin(time / 310 + index) * 44;
 
-    ball.vx += (tangentX / tangentLength) * swirl * deltaSeconds;
-    ball.vy += (tangentY / tangentLength) * swirl * deltaSeconds;
-    ball.vy += Math.sin(time / 420 + index) * 7 * deltaSeconds;
+    ball.vx += (-dx / distanceFromCenter) * centerPull * deltaSeconds;
+    ball.vy += (-dy / distanceFromCenter) * centerPull * deltaSeconds;
+    ball.vx += turbulenceX * deltaSeconds * poolPhysics.speedBoost;
+    ball.vy += turbulenceY * deltaSeconds * poolPhysics.speedBoost;
+    ball.vx += sidePulse * jetPower * deltaSeconds * poolPhysics.speedBoost;
+    ball.vy -= (360 + index % 5 * 24) * jetPower * deltaSeconds * poolPhysics.speedBoost;
+    ball.vx += Math.sin(time / 95 + index * 2.4) * 20 * deltaSeconds;
+    ball.vy += Math.cos(time / 105 + index * 1.7) * 18 * deltaSeconds;
     ball.x += ball.vx * deltaSeconds * poolPhysics.speedBoost;
     ball.y += ball.vy * deltaSeconds * poolPhysics.speedBoost;
-    ball.vx *= 0.997;
-    ball.vy *= 0.997;
+    ball.vx *= 0.992;
+    ball.vy *= 0.992;
 
+    limitBallSpeed(ball, 320 * poolPhysics.speedBoost);
     keepBallInsideCircle(ball);
   });
 
