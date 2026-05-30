@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>婚禮大樂透兌獎卡</title>
+  <link rel="stylesheet" href="cards.css">
+</head>
+<body>
+  <header class="print-toolbar">
+    <div>
+      <p class="toolbar-kicker">Timmy &amp; Emily Wedding Lottery</p>
+      <h1>婚禮大樂透兌獎卡</h1>
+      <p id="cardCount">準備兌獎卡中</p>
+    </div>
+    <button type="button" onclick="window.print()">列印兌獎卡</button>
+  </header>
+
+  <main id="cardsRoot" class="cards-root" aria-live="polite"></main>
+
+  <script src="cards-data.js"></script>
+  <script src="cards.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+:root {
+  --red: #9d1414;
+  --red-deep: #5b0708;
+  --red-dark: #320304;
+  --gold: #f6cf63;
+  --gold-light: #fff1b6;
+  --gold-dark: #a76a14;
+  --paper: #fff8ea;
+  --ink: #3a0808;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(246, 207, 99, 0.24), transparent 28rem),
+    linear-gradient(135deg, #4f0507, #140102 58%, #320304);
+}
+
+.print-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  padding: 18px 28px;
+  color: var(--gold-light);
+  background: rgba(35, 2, 3, 0.92);
+  border-bottom: 1px solid rgba(246, 207, 99, 0.38);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32);
+}
+
+.print-toolbar h1,
+.print-toolbar p {
+  margin: 0;
+}
+
+.print-toolbar h1 {
+  margin-top: 4px;
+  font-size: 28px;
+  letter-spacing: 0;
+}
+
+.toolbar-kicker {
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+#cardCount {
+  margin-top: 6px;
+  color: #ffe9b4;
+  font-size: 14px;
+}
+
+.print-toolbar button {
+  min-width: 150px;
+  height: 46px;
+  border: 1px solid rgba(255, 241, 182, 0.78);
+  border-radius: 23px;
+  color: #4b0707;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 900;
+  background: linear-gradient(180deg, #fff4bf, #f4bd43 58%, #c77c18);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28), inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+
+.cards-root {
+  padding: 28px 0 60px;
+}
+
+.print-page {
+  width: 210mm;
+  height: 297mm;
+  display: grid;
+  grid-template-columns: repeat(2, 105mm);
+  grid-template-rows: repeat(4, 74.25mm);
+  margin: 0 auto 24px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+}
+
+.lottery-card {
+  position: relative;
+  width: 105mm;
+  height: 74.25mm;
+  padding: 8mm 7mm 6mm;
+  overflow: hidden;
+  color: var(--gold-light);
+  border: 0.25mm solid rgba(167, 106, 20, 0.72);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 237, 162, 0.24), transparent 28mm),
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.13), transparent 18mm),
+    linear-gradient(135deg, #b71718, var(--red) 44%, var(--red-deep));
+}
+
+.lottery-card::before {
+  position: absolute;
+  inset: 3mm;
+  pointer-events: none;
+  content: "";
+  border: 0.35mm solid rgba(255, 237, 162, 0.62);
+  box-shadow: inset 0 0 0 0.35mm rgba(112, 17, 7, 0.42);
+}
+
+.lottery-card::after {
+  position: absolute;
+  right: -13mm;
+  bottom: -19mm;
+  width: 52mm;
+  height: 52mm;
+  pointer-events: none;
+  content: "囍";
+  color: rgba(255, 226, 142, 0.14);
+  font-size: 47mm;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.card-badge {
+  position: absolute;
+  top: 6mm;
+  right: 7mm;
+  z-index: 1;
+  margin: 0;
+  color: #ffe9a6;
+  font-size: 9pt;
+  font-weight: 900;
+}
+
+.lottery-card h2 {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #fff4bf;
+  font-size: 24pt;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 1.2mm 0 rgba(86, 11, 8, 0.7), 0 0 4mm rgba(246, 207, 99, 0.44);
+}
+
+.card-subtitle {
+  position: relative;
+  z-index: 1;
+  margin: 2.5mm 0 6mm;
+  color: #ffe9a6;
+  font-size: 10pt;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.number-list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2mm;
+  width: 100%;
+}
+
+.number-ball {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  color: #790b0b;
+  border: 0.35mm solid #ffe399;
+  border-radius: 50%;
+  font-size: 14pt;
+  font-weight: 900;
+  background:
+    radial-gradient(circle at 32% 24%, #fffdf0 0 14%, #fff0b0 15% 34%, #f4c04b 58%, #b87516 100%);
+  box-shadow:
+    inset -0.8mm -1mm 1.4mm rgba(97, 37, 0, 0.34),
+    inset 0.7mm 0.7mm 1mm rgba(255, 255, 255, 0.58),
+    0 1.2mm 2.4mm rgba(0, 0, 0, 0.3);
+}
+
+.draw-date {
+  position: absolute;
+  left: 7mm;
+  right: 7mm;
+  bottom: 6.2mm;
+  z-index: 1;
+  margin: 0;
+  color: #fff2ba;
+  font-size: 11pt;
+  font-weight: 900;
+  text-align: center;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    width: 210mm;
+    min-height: 297mm;
+    background: #fff;
+  }
+
+  .print-toolbar {
+    display: none;
+  }
+
+  .cards-root {
+    padding: 0;
+  }
+
+  .print-page {
+    margin: 0;
+    box-shadow: none;
+    break-after: page;
+    page-break-after: always;
+  }
+
+  .print-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .lottery-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
