@@ -4,7 +4,9 @@ const DRAW_COUNT = 6;
 const BALL_DELAY_MS = 760;
 
 const drawButton = document.querySelector("#drawButton");
-const adminInput = document.querySelector("#adminNumbers");
+const adminInput1 = document.querySelector("#adminNumbers1");
+const adminInput2 = document.querySelector("#adminNumbers2");
+const adminInputs = [adminInput1, adminInput2];
 const adminPanel = document.querySelector("#adminPanel");
 const machineRing = document.querySelector(".machine-ring");
 const poolBalls = document.querySelector("#poolBalls");
@@ -12,10 +14,12 @@ const message = document.querySelector("#message");
 const winnerTitle = document.querySelector("#winnerTitle");
 const balls = Array.from(document.querySelectorAll(".lotto-ball"));
 const drawState = {
-  numbers: [],
+  rounds: [],
+  roundIndex: 0,
   nextIndex: 0,
   isActive: false,
   isAnimating: false,
+  roundStartedIndex: -1,
 };
 const poolPhysics = {
   balls: [],
@@ -215,31 +219,63 @@ function animatePoolBalls(time) {
   window.requestAnimationFrame(animatePoolBalls);
 }
 
-function parseAdminNumbers(value) {
+function parseAssignedNumbers(value, label) {
   const trimmed = value.trim();
 
   if (!trimmed) {
-    return { mode: "random", numbers: [] };
+    return { mode: "empty", numbers: [] };
   }
 
   const parts = trimmed.split(/[\s,，、]+/).filter(Boolean);
   const numbers = parts.map((part) => Number(part));
 
   if (parts.length !== DRAW_COUNT || numbers.some((number) => !Number.isInteger(number))) {
-    return { mode: "invalid", error: "手動指定號碼必須剛好是 6 個整數。" };
+    return { mode: "invalid", error: `${label} 必須剛好是 6 個整數。` };
   }
 
   if (numbers.some((number) => number < POOL_MIN || number > POOL_MAX)) {
-    return { mode: "invalid", error: "手動指定號碼範圍必須介於 1 到 36。" };
+    return { mode: "invalid", error: `${label} 範圍必須介於 1 到 36。` };
   }
 
   if (new Set(numbers).size !== DRAW_COUNT) {
-    return { mode: "invalid", error: "手動指定號碼不可重複。" };
+    return { mode: "invalid", error: `${label} 不可重複。` };
+  }
+
+  return {
+    mode: "valid",
+    numbers: numbers.sort((a, b) => a - b),
+  };
+}
+
+function parseAdminRounds() {
+  const first = parseAssignedNumbers(adminInput1.value, "指定號碼1");
+  const second = parseAssignedNumbers(adminInput2.value, "指定號碼2");
+
+  if (first.mode === "invalid") {
+    return first;
+  }
+
+  if (second.mode === "invalid") {
+    return second;
+  }
+
+  if (first.mode === "empty" && second.mode === "empty") {
+    return {
+      mode: "random",
+      rounds: [{ label: "隨機號碼", numbers: getRandomNumbers() }],
+    };
+  }
+
+  if (first.mode === "empty" || second.mode === "empty") {
+    return { mode: "invalid", error: "若使用指定號碼，指定號碼1與指定號碼2都必須填寫。" };
   }
 
   return {
     mode: "admin",
-    numbers: numbers.sort((a, b) => a - b),
+    rounds: [
+      { label: "指定號碼1", numbers: first.numbers },
+      { label: "指定號碼2", numbers: second.numbers },
+    ],
   };
 }
 
@@ -293,31 +329,40 @@ async function startDraw() {
     return;
   }
 
-  if (!drawState.isActive || drawState.nextIndex >= DRAW_COUNT) {
-    const parsed = parseAdminNumbers(adminInput.value);
+  if (!drawState.isActive) {
+    const parsed = parseAdminRounds();
 
     if (parsed.mode === "invalid") {
       setMessage(parsed.error, "error");
       return;
     }
 
-    drawState.numbers = parsed.mode === "admin" ? parsed.numbers : getRandomNumbers();
+    drawState.rounds = parsed.rounds;
+    drawState.roundIndex = 0;
     drawState.nextIndex = 0;
     drawState.isActive = true;
-    resetDrawState();
-    setMessage(parsed.mode === "admin" ? "管理模式啟用，將依指定號碼逐顆開獎。" : "未設定指定號碼，系統將隨機逐顆開獎。", "success");
+    drawState.roundStartedIndex = -1;
+    setMessage(parsed.mode === "admin" ? "管理模式啟用，將先開指定號碼1，再開指定號碼2。" : "未設定指定號碼，系統將隨機逐顆開獎。", "success");
   }
 
+  if (drawState.roundStartedIndex !== drawState.roundIndex) {
+    resetDrawState();
+    drawState.roundStartedIndex = drawState.roundIndex;
+  }
+
+  const currentRound = drawState.rounds[drawState.roundIndex];
   const currentIndex = drawState.nextIndex;
-  const currentNumber = drawState.numbers[currentIndex];
+  const currentNumber = currentRound.numbers[currentIndex];
 
   drawState.isAnimating = true;
   drawButton.disabled = true;
-  adminInput.disabled = true;
+  adminInputs.forEach((input) => {
+    input.disabled = true;
+  });
   drawButton.textContent = "開獎中...";
   poolPhysics.speedBoost = 1.65;
   machineRing.classList.add("is-drawing");
-  setMessage(`第 ${currentIndex + 1} 顆號碼開獎中。`, "success");
+  setMessage(`${currentRound.label} 第 ${currentIndex + 1} 顆號碼開獎中。`, "success");
 
   await revealOneNumber(currentIndex, currentNumber);
 
@@ -327,17 +372,33 @@ async function startDraw() {
   if (drawState.nextIndex >= DRAW_COUNT) {
     machineRing.classList.remove("is-drawing");
     poolPhysics.speedBoost = 1;
+
+    if (drawState.roundIndex + 1 < drawState.rounds.length) {
+      winnerTitle.textContent = `${currentRound.label} 開獎完成`;
+      winnerTitle.classList.add("is-complete");
+      setMessage(`${currentRound.label} 開獎完成：${currentRound.numbers.map(formatNumber).join("、")}。下一輪將開指定號碼2。`, "success");
+      drawState.roundIndex += 1;
+      drawState.nextIndex = 0;
+      drawButton.textContent = `開始${drawState.rounds[drawState.roundIndex].label}`;
+      drawButton.disabled = false;
+      drawButton.focus();
+      return;
+    }
+
     winnerTitle.textContent = "恭喜得獎者";
     winnerTitle.classList.add("is-complete");
-    setMessage(`開獎完成：${drawState.numbers.map(formatNumber).join("、")}`, "success");
+    setMessage(`${currentRound.label} 開獎完成：${currentRound.numbers.map(formatNumber).join("、")}`, "success");
+    drawState.isActive = false;
     drawButton.textContent = "重新開獎";
     drawButton.disabled = false;
-    adminInput.disabled = false;
+    adminInputs.forEach((input) => {
+      input.disabled = false;
+    });
     drawButton.focus();
     return;
   }
 
-  setMessage(`已開出 ${drawState.nextIndex} 顆，請按下一顆。`, "success");
+  setMessage(`${currentRound.label} 已開出 ${drawState.nextIndex} 顆，請按下一顆。`, "success");
   drawButton.textContent = `開下一顆 (${drawState.nextIndex + 1}/6)`;
   drawButton.disabled = false;
   drawButton.focus();
@@ -347,7 +408,7 @@ function toggleAdminPanel() {
   adminPanel.classList.toggle("is-hidden");
 
   if (!adminPanel.classList.contains("is-hidden")) {
-    adminInput.focus();
+    adminInput1.focus();
   }
 }
 
