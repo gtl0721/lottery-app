@@ -80,8 +80,8 @@ body {
 
 .lottery-machine-wrapper {
   position: absolute;
-  left: 530px;
-  top: 285px;
+  left: 560px;
+  top: 395px;
   width: 520px;
   height: 515px;
   background: transparent;
@@ -164,9 +164,9 @@ body {
 .winner-panel,
 .number-panel {
   position: absolute;
-  left: 1145px;
-  top: 430px;
-  width: 610px;
+  left: 1195px;
+  top: 450px;
+  width: 618px;
   height: 190px;
   background: transparent !important;
   border: none !important;
@@ -239,8 +239,8 @@ body {
 #drawButton,
 .start-button {
   position: absolute;
-  left: 1210px;
-  top: 918px;
+  left: 1265px;
+  top: 795px;
   width: 461px;
   height: 76px;
   min-width: 0;
