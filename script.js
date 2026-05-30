@@ -2,6 +2,7 @@ const POOL_MIN = 1;
 const POOL_MAX = 36;
 const DRAW_COUNT = 6;
 const BALL_DELAY_MS = 760;
+const COMPLETE_MESSAGE = "開獎完成，中獎請舉手!!!";
 
 const drawButton = document.querySelector("#drawButton");
 const adminInput1 = document.querySelector("#adminNumbers1");
@@ -374,20 +375,20 @@ async function startDraw() {
     poolPhysics.speedBoost = 1;
 
     if (drawState.roundIndex + 1 < drawState.rounds.length) {
-      winnerTitle.textContent = `${currentRound.label} 開獎完成`;
+      winnerTitle.textContent = COMPLETE_MESSAGE;
       winnerTitle.classList.add("is-complete");
-      setMessage(`${currentRound.label} 開獎完成：${currentRound.numbers.map(formatNumber).join("、")}。下一輪將開指定號碼2。`, "success");
+      setMessage(COMPLETE_MESSAGE, "success");
       drawState.roundIndex += 1;
       drawState.nextIndex = 0;
-      drawButton.textContent = `開始${drawState.rounds[drawState.roundIndex].label}`;
+      drawButton.textContent = "繼續開獎";
       drawButton.disabled = false;
       drawButton.focus();
       return;
     }
 
-    winnerTitle.textContent = "恭喜得獎者";
+    winnerTitle.textContent = COMPLETE_MESSAGE;
     winnerTitle.classList.add("is-complete");
-    setMessage(`${currentRound.label} 開獎完成：${currentRound.numbers.map(formatNumber).join("、")}`, "success");
+    setMessage(COMPLETE_MESSAGE, "success");
     drawState.isActive = false;
     drawButton.textContent = "重新開獎";
     drawButton.disabled = false;

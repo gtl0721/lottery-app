@@ -21,7 +21,7 @@ No framework, backend, database, or deployment is required.
 - Assigned draw order is `指定號碼1` first, then `指定號碼2`.
 - Draw button is locked while each ball is animating.
 - Final result is sorted from small to large.
-- Shows `恭喜得獎者` after the draw is complete.
+- Shows `開獎完成，中獎請舉手!!!` after each assigned group is complete.
 - The lottery machine contains all `01` to `36` balls.
 - Pool balls move with animated airflow and outer-ring bouncing.
 - Admin panel is hidden by default and can be toggled with the `M` key.
@@ -74,8 +74,8 @@ http://127.0.0.1:5500/index.html
 ```
 
 8. Press `M` again to hide the admin panel.
-9. Click the draw button 6 times to reveal `指定號碼1`.
-10. Continue clicking to reveal `指定號碼2`.
+9. Click the draw button 6 times to reveal the first assigned group.
+10. Click `繼續開獎`, then continue clicking to reveal the second assigned group.
 
 ## Admin Mode
 
