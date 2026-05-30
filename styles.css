@@ -24,14 +24,27 @@ body {
   color: var(--white);
   font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
   overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #120508;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  width: min(100vw, 177.7778vh);
+  height: min(100vh, 56.25vw);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
   background-image: url("./assets/cat-lottery-bg.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
 }
 
-body::before {
-  position: fixed;
+.app::before {
+  position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
@@ -41,11 +54,11 @@ body::before {
     rgba(0, 0, 0, 0.18);
 }
 
-.app {
-  position: relative;
+.lottery-machine-wrapper,
+.result-panel,
+.draw-button,
+.admin-panel {
   z-index: 1;
-  width: 100vw;
-  height: 100vh;
 }
 
 .visually-hidden {
@@ -62,10 +75,10 @@ body::before {
 
 .lottery-machine-wrapper {
   position: absolute;
-  left: 31.5vw;
-  top: 30vh;
-  width: 28vw;
-  height: 42vh;
+  left: 31.5%;
+  top: 30%;
+  width: 28%;
+  height: 42%;
   background: transparent;
 }
 
@@ -116,12 +129,12 @@ body::before {
 }
 
 .pool-ball {
-  width: clamp(28px, 3vw, 48px);
-  height: clamp(28px, 3vw, 48px);
+  width: clamp(24px, 3.1%, 48px);
+  height: clamp(24px, 5.5%, 48px);
   position: absolute;
   left: 50%;
   top: 50%;
-  font-size: clamp(0.7rem, 1vw, 1rem);
+  font-size: clamp(0.65rem, 1vw, 1rem);
   transform: translate(-50%, -50%);
   will-change: transform;
 }
@@ -142,17 +155,17 @@ body::before {
 
 .result-panel {
   position: absolute;
-  right: 8.5vw;
-  top: 42vh;
-  width: 33vw;
+  right: 8.5%;
+  top: 42%;
+  width: 33%;
   background: transparent;
   border: none;
   box-shadow: none;
 }
 
 .winner-title {
-  min-height: 3.2vw;
-  margin: 0 0 1.1vw;
+  min-height: 5.7%;
+  margin: 0 0 3.3%;
   color: var(--gold-light);
   text-align: center;
   font-size: clamp(1.15rem, 2.35vw, 2.8rem);
@@ -170,7 +183,7 @@ body::before {
 .result-balls {
   display: flex;
   justify-content: center;
-  gap: 1vw;
+  gap: 3.03%;
 }
 
 .balls-board {
@@ -183,8 +196,9 @@ body::before {
 }
 
 .result-ball {
-  width: 4.2vw;
-  height: 4.2vw;
+  width: 12.73%;
+  aspect-ratio: 1;
+  height: auto;
   min-width: 44px;
   min-height: 44px;
   font-size: clamp(1.15rem, 2vw, 2.35rem);
@@ -201,10 +215,10 @@ body::before {
 
 .draw-button {
   position: absolute;
-  right: 13vw;
-  bottom: 8vh;
-  width: 24vw;
-  height: 7vh;
+  right: 13%;
+  bottom: 8%;
+  width: 24%;
+  height: 7%;
   min-width: 220px;
   min-height: 54px;
   border: 0;
@@ -360,11 +374,13 @@ input:focus {
 
 @media (max-width: 900px) {
   body {
-    overflow-y: auto;
+    overflow: hidden;
   }
 
   .app {
-    min-height: 100vh;
+    width: 100vw;
+    height: 100vh;
+    aspect-ratio: auto;
   }
 
   .lottery-machine-wrapper {
@@ -409,16 +425,16 @@ input:focus {
 
 @media (max-height: 700px) and (min-width: 901px) {
   .lottery-machine-wrapper {
-    top: 28vh;
-    height: 39vh;
+    top: 28%;
+    height: 39%;
   }
 
   .result-panel {
-    top: 40vh;
+    top: 40%;
   }
 
   .draw-button {
-    bottom: 6vh;
-    height: 7.5vh;
+    bottom: 6%;
+    height: 7.5%;
   }
 }
