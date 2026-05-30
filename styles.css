@@ -63,7 +63,8 @@ body {
 .result-panel,
 .draw-button,
 .admin-panel,
-.stage-title {
+.stage-title,
+.stage-subtitle {
   z-index: 1;
 }
 
@@ -96,6 +97,23 @@ body {
     0 0 18px rgba(248, 212, 106, 0.72),
     0 0 34px rgba(255, 77, 53, 0.48);
   text-transform: none;
+}
+
+.stage-subtitle {
+  position: absolute;
+  left: 50%;
+  top: 102px;
+  width: 900px;
+  margin: 0;
+  transform: translateX(-50%);
+  color: #fff4d1;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  text-shadow:
+    0 2px 0 rgba(88, 29, 0, 0.78),
+    0 0 16px rgba(248, 212, 106, 0.58);
 }
 
 .lottery-machine-wrapper {
