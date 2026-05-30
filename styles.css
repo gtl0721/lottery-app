@@ -24,13 +24,14 @@ body {
   margin: 0;
   color: var(--white);
   font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
-  background:
-    radial-gradient(circle at 50% 8%, rgba(255, 230, 162, 0.26), transparent 24rem),
-    radial-gradient(circle at 12% 20%, rgba(216, 23, 44, 0.46), transparent 22rem),
-    radial-gradient(circle at 84% 18%, rgba(248, 212, 106, 0.2), transparent 24rem),
-    linear-gradient(135deg, #38040a 0%, #850817 46%, #2c0307 100%);
+  background-image: url("assets/cat-lottery-bg.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   overflow-x: hidden;
   overflow-y: auto;
+  isolation: isolate;
 }
 
 body::before,
@@ -43,24 +44,24 @@ body::after {
 }
 
 body::before {
-  background-image:
-    linear-gradient(90deg, rgba(255, 225, 150, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(255, 225, 150, 0.08) 1px, transparent 1px);
-  background-size: 68px 68px;
-  mask-image: radial-gradient(circle, #000 0 58%, transparent 88%);
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.48) 52%, rgba(0, 0, 0, 0.64)),
+    rgba(30, 5, 8, 0.28);
 }
 
 body::after {
   z-index: -1;
   background:
-    linear-gradient(115deg, transparent 0 18%, rgba(255, 233, 173, 0.16) 18% 19%, transparent 19% 100%),
-    linear-gradient(245deg, transparent 0 22%, rgba(255, 233, 173, 0.12) 22% 23%, transparent 23% 100%);
+    radial-gradient(circle at 78% 18%, rgba(255, 230, 162, 0.16), transparent 22rem),
+    linear-gradient(245deg, transparent 0 26%, rgba(255, 233, 173, 0.08) 26% 27%, transparent 27% 100%);
 }
 
 .wedding-stage {
-  width: min(1500px, calc(100vw - 48px));
+  width: min(940px, calc(100vw - 48px));
   min-height: 100vh;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: clamp(24px, 5vw, 96px);
   padding: 28px 0;
   display: grid;
   place-items: center;
@@ -80,7 +81,7 @@ body::after {
   position: relative;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 28%),
-    linear-gradient(135deg, rgba(94, 7, 15, 0.92), rgba(143, 10, 25, 0.74));
+    linear-gradient(135deg, rgba(94, 7, 15, 0.84), rgba(143, 10, 25, 0.68));
   box-shadow:
     0 32px 90px rgba(0, 0, 0, 0.5),
     inset 0 0 0 6px rgba(255, 215, 128, 0.06);
@@ -416,6 +417,8 @@ input:focus {
 @media (max-width: 900px) {
   .wedding-stage {
     width: min(100% - 24px, 1500px);
+    margin-left: auto;
+    margin-right: auto;
     padding: 12px 0;
   }
 
@@ -434,7 +437,8 @@ input:focus {
 
 @media (max-height: 820px) and (min-width: 901px) {
   .wedding-stage {
-    width: min(1360px, calc(100vw - 32px));
+    width: min(820px, calc(100vw - 32px));
+    margin-right: clamp(16px, 4vw, 72px);
     padding: 16px 0;
   }
 
