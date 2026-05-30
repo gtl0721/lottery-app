@@ -130,6 +130,35 @@ function keepBallInsideCircle(ball) {
   }
 }
 
+function addPassingAirflowInteractions() {
+  for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
+    for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
+      const first = poolPhysics.balls[firstIndex];
+      const second = poolPhysics.balls[secondIndex];
+      const dx = second.x - first.x;
+      const dy = second.y - first.y;
+      const distance = Math.hypot(dx, dy) || 1;
+      const influenceDistance = (first.radius + second.radius) * 1.55;
+
+      if (distance > influenceDistance) {
+        continue;
+      }
+
+      const normalX = dx / distance;
+      const normalY = dy / distance;
+      const tangentX = -normalY;
+      const tangentY = normalX;
+      const closeness = 1 - distance / influenceDistance;
+      const airflowKick = Math.sin(poolPhysics.lastTime / 120 + first.phase + second.phase) * closeness * 18;
+
+      first.vx += tangentX * airflowKick;
+      first.vy += tangentY * airflowKick;
+      second.vx -= tangentX * airflowKick;
+      second.vy -= tangentY * airflowKick;
+    }
+  }
+}
+
 function limitBallSpeed(ball, maxSpeed) {
   const speed = Math.hypot(ball.vx, ball.vy);
 
@@ -159,13 +188,20 @@ function animatePoolBalls(time) {
     const nozzleDistance = Math.hypot(nozzleDx, nozzleDy) || 1;
     const jetReach = poolPhysics.radius * 0.72;
     const jetPower = Math.max(0, 1 - nozzleDistance / jetReach);
-    const centerPull = 18 * (distanceFromCenter / poolPhysics.radius);
+    const targetDistance = poolPhysics.radius * (0.48 + Math.sin(time / 900 + ball.phase) * 0.18);
+    const radialBalance = Math.max(-78, Math.min(96, (targetDistance - distanceFromCenter) * 1.35));
     const turbulenceX = Math.sin(time / 180 + ball.phase * 3.1) * 72;
     const turbulenceY = Math.cos(time / 230 + ball.phase * 2.7) * 58;
     const sidePulse = Math.sin(time / 310 + index) * 44;
+    const swirlDirection = index % 4 === 0 ? -1 : 1;
+    const swirlPower = (62 + Math.sin(time / 260 + ball.phase) * 34) * swirlDirection;
+    const tangentX = -dy / distanceFromCenter;
+    const tangentY = dx / distanceFromCenter;
 
-    ball.vx += (-dx / distanceFromCenter) * centerPull * deltaSeconds;
-    ball.vy += (-dy / distanceFromCenter) * centerPull * deltaSeconds;
+    ball.vx += (dx / distanceFromCenter) * radialBalance * deltaSeconds;
+    ball.vy += (dy / distanceFromCenter) * radialBalance * deltaSeconds;
+    ball.vx += tangentX * swirlPower * deltaSeconds;
+    ball.vy += tangentY * swirlPower * deltaSeconds;
     ball.vx += turbulenceX * deltaSeconds * poolPhysics.speedBoost;
     ball.vy += turbulenceY * deltaSeconds * poolPhysics.speedBoost;
     ball.vx += sidePulse * jetPower * deltaSeconds * poolPhysics.speedBoost;
@@ -177,6 +213,8 @@ function animatePoolBalls(time) {
 
     limitBallSpeed(ball, 300 * poolPhysics.speedBoost);
   });
+
+  addPassingAirflowInteractions();
 
   poolPhysics.balls.forEach((ball) => {
     ball.x += ball.vx * deltaSeconds * poolPhysics.speedBoost;
