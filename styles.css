@@ -1,14 +1,10 @@
 :root {
-  --red-deep: #5c0710;
-  --red-main: #a90d1d;
-  --red-bright: #d8172c;
   --gold: #f8d46a;
   --gold-light: #fff3bf;
   --gold-dark: #9c6213;
   --ink: #2a0908;
   --white: #fff9ee;
   --muted: #f3d8bd;
-  --panel: rgba(94, 7, 15, 0.72);
 }
 
 * {
@@ -17,201 +13,117 @@
 
 html,
 body {
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 body {
   margin: 0;
+  width: 100vw;
+  height: 100vh;
   color: var(--white);
   font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
-  background-image: url("assets/cat-lottery-bg.png");
-  background-position: center center;
+  overflow: hidden;
+  background-image: url("./assets/cat-lottery-bg.png");
   background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  overflow-x: hidden;
-  overflow-y: auto;
-  isolation: isolate;
-}
-
-body::before,
-body::after {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  content: "";
 }
 
 body::before {
-  z-index: -1;
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.48) 52%, rgba(0, 0, 0, 0.64)),
-    rgba(30, 5, 8, 0.28);
-}
-
-body::after {
-  z-index: -1;
-  background:
-    radial-gradient(circle at 78% 18%, rgba(255, 230, 162, 0.16), transparent 22rem),
-    linear-gradient(245deg, transparent 0 26%, rgba(255, 233, 173, 0.08) 26% 27%, transparent 27% 100%);
-}
-
-.wedding-stage {
-  width: min(940px, calc(100vw - 48px));
-  min-height: 100vh;
-  margin-left: auto;
-  margin-right: clamp(24px, 5vw, 96px);
-  padding: 28px 0;
-  display: grid;
-  place-items: center;
-  position: relative;
-}
-
-.show-area {
-  width: 100%;
-  min-height: calc(100vh - 56px);
-  padding: clamp(24px, 3vw, 46px);
-  border: 1px solid rgba(255, 228, 156, 0.42);
-  border-radius: 8px;
-  display: grid;
-  grid-template-rows: auto minmax(220px, 0.9fr) auto auto;
-  align-items: center;
-  overflow: hidden;
-  position: relative;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 28%),
-    linear-gradient(135deg, rgba(94, 7, 15, 0.84), rgba(143, 10, 25, 0.68));
-  box-shadow:
-    0 32px 90px rgba(0, 0, 0, 0.5),
-    inset 0 0 0 6px rgba(255, 215, 128, 0.06);
-}
-
-.show-area::before {
-  position: absolute;
-  inset: 16px;
-  border: 1px solid rgba(255, 233, 173, 0.26);
-  border-radius: 8px;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
   content: "";
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.18) 42%, rgba(0, 0, 0, 0.4)),
+    rgba(0, 0, 0, 0.18);
 }
 
-.ceremony-header {
-  text-align: center;
+.app {
   position: relative;
   z-index: 1;
+  width: 100vw;
+  height: 100vh;
 }
 
-.eyebrow {
-  margin: 0 0 8px;
-  color: var(--gold);
-  font-size: clamp(0.8rem, 1.2vw, 1rem);
-  font-weight: 900;
-  letter-spacing: 0.14em;
+.visually-hidden {
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
-h1,
-h2,
-p {
-  margin-top: 0;
-}
-
-h1 {
-  margin-bottom: 8px;
-  color: var(--gold-light);
-  font-size: clamp(3.6rem, 7.5vw, 8rem);
-  line-height: 0.95;
-  font-weight: 950;
-  text-shadow:
-    0 4px 0 var(--gold-dark),
-    0 14px 34px rgba(0, 0, 0, 0.48),
-    0 0 42px rgba(248, 212, 106, 0.34);
-}
-
-h2 {
-  margin-bottom: 0;
-  font-size: 1.3rem;
-}
-
-.subtitle {
-  margin-bottom: 0;
-  color: var(--muted);
-  font-size: clamp(1.1rem, 2vw, 1.65rem);
-  font-weight: 700;
-}
-
-.lottery-machine {
-  min-height: clamp(220px, 34vh, 300px);
-  display: grid;
-  place-items: center;
-  position: relative;
+.lottery-machine-wrapper {
+  position: absolute;
+  left: 31.5vw;
+  top: 30vh;
+  width: 28vw;
+  height: 42vh;
+  background: transparent;
 }
 
 .machine-ring {
-  width: min(420px, 46vh, 78vw);
-  aspect-ratio: 1;
-  border: 14px solid rgba(255, 225, 150, 0.28);
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   position: relative;
-  background:
-    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.5), transparent 10%),
-    radial-gradient(circle, rgba(255, 244, 203, 0.18), rgba(255, 244, 203, 0.05) 58%, rgba(31, 4, 6, 0.58));
-  box-shadow:
-    inset 0 0 48px rgba(255, 255, 255, 0.18),
-    inset 0 -28px 60px rgba(0, 0, 0, 0.42),
-    0 0 0 10px rgba(124, 7, 18, 0.52),
-    0 30px 56px rgba(0, 0, 0, 0.38),
-    0 0 70px rgba(248, 212, 106, 0.22);
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
 }
 
 .ring-line {
   position: absolute;
-  inset: 54px;
-  border: 1px dashed rgba(255, 244, 203, 0.34);
+  inset: 14%;
+  border: 1px dashed rgba(255, 244, 203, 0.22);
   border-radius: 50%;
   animation: spin 4.2s linear infinite;
 }
 
 .ring-line-b {
-  inset: 98px;
+  inset: 26%;
   animation-duration: 2.7s;
   animation-direction: reverse;
 }
 
+.pool-balls {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
 .pool-ball,
-.lotto-ball {
+.result-ball {
   border-radius: 50%;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--ink);
   font-weight: 950;
   background:
     radial-gradient(circle at 28% 22%, #fff 0 9%, var(--gold-light) 17%, var(--gold) 46%, var(--gold-dark) 100%);
   box-shadow:
-    inset -12px -14px 24px rgba(66, 20, 0, 0.32),
-    inset 9px 9px 16px rgba(255, 255, 255, 0.34),
-    0 16px 26px rgba(0, 0, 0, 0.34);
-}
-
-.pool-balls {
-  position: absolute;
-  inset: 4px;
-  overflow: visible;
+    inset -0.55vw -0.65vw 1vw rgba(66, 20, 0, 0.32),
+    inset 0.35vw 0.35vw 0.65vw rgba(255, 255, 255, 0.34),
+    0 0.55vw 0.9vw rgba(0, 0, 0, 0.3);
 }
 
 .pool-ball {
-  width: clamp(32px, 4.4vw, 52px);
-  height: clamp(32px, 4.4vw, 52px);
+  width: clamp(28px, 3vw, 48px);
+  height: clamp(28px, 3vw, 48px);
   position: absolute;
   left: 50%;
   top: 50%;
-  font-size: clamp(0.72rem, 1.4vw, 1.05rem);
+  font-size: clamp(0.7rem, 1vw, 1rem);
   transform: translate(-50%, -50%);
   will-change: transform;
-  box-shadow:
-    inset -8px -10px 16px rgba(66, 20, 0, 0.34),
-    inset 6px 7px 12px rgba(255, 255, 255, 0.32),
-    0 9px 16px rgba(0, 0, 0, 0.3);
 }
 
 .pool-ball:nth-child(3n) {
@@ -228,77 +140,83 @@ h2 {
   filter: saturate(1.18) brightness(1.04);
 }
 
-.result-area {
-  position: relative;
-  z-index: 1;
+.result-panel {
+  position: absolute;
+  right: 8.5vw;
+  top: 42vh;
+  width: 33vw;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .winner-title {
-  min-height: 58px;
-  margin-bottom: 18px;
+  min-height: 3.2vw;
+  margin: 0 0 1.1vw;
   color: var(--gold-light);
   text-align: center;
-  font-size: clamp(1.6rem, 4vw, 3.4rem);
+  font-size: clamp(1.15rem, 2.35vw, 2.8rem);
   font-weight: 950;
-  text-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
+  line-height: 1.15;
+  text-shadow:
+    0 0.18vw 0.45vw rgba(0, 0, 0, 0.72),
+    0 0 1vw rgba(248, 212, 106, 0.42);
 }
 
 .winner-title.is-complete {
   animation: winnerPop 0.7s ease both;
 }
 
+.result-balls {
+  display: flex;
+  justify-content: center;
+  gap: 1vw;
+}
+
 .balls-board {
-  width: min(980px, 100%);
-  margin: 0 auto;
-  padding: clamp(14px, 2vw, 24px);
-  border: 1px solid rgba(255, 232, 174, 0.4);
-  border-radius: 8px;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(100px, 1fr));
-  gap: clamp(12px, 1.6vw, 22px);
-  background:
-    linear-gradient(180deg, rgba(255, 239, 194, 0.16), rgba(63, 4, 9, 0.42)),
-    rgba(50, 4, 8, 0.48);
-  box-shadow: inset 0 0 34px rgba(255, 230, 160, 0.1);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-.lotto-ball {
-  aspect-ratio: 1;
-  min-width: 0;
-  font-size: clamp(2.2rem, 4.6vw, 5rem);
+.result-ball {
+  width: 4.2vw;
+  height: 4.2vw;
+  min-width: 44px;
+  min-height: 44px;
+  font-size: clamp(1.15rem, 2vw, 2.35rem);
   line-height: 1;
-  transform: translateY(0) rotate(0) scale(1);
 }
 
-.lotto-ball.rolling {
+.result-ball.rolling {
   animation: ballReveal 0.86s cubic-bezier(0.16, 0.86, 0.28, 1.2);
 }
 
-.lotto-ball.settled {
+.result-ball.settled {
   animation: settleBounce 0.42s ease;
 }
 
-.controls {
-  margin-top: clamp(18px, 2.4vw, 34px);
-  display: flex;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
 .draw-button {
-  min-width: min(380px, 82vw);
-  min-height: clamp(60px, 8vh, 76px);
+  position: absolute;
+  right: 13vw;
+  bottom: 8vh;
+  width: 24vw;
+  height: 7vh;
+  min-width: 220px;
+  min-height: 54px;
   border: 0;
   border-radius: 999px;
   color: #4b0708;
   cursor: pointer;
   font: inherit;
-  font-size: clamp(1.35rem, 2.4vw, 2rem);
+  font-size: clamp(1.15rem, 2vw, 2rem);
   font-weight: 950;
   background: linear-gradient(180deg, #fff0ae, #f7c84f 54%, #b86f13);
   box-shadow:
-    0 18px 34px rgba(0, 0, 0, 0.34),
+    0 1vw 1.6vw rgba(0, 0, 0, 0.34),
     inset 0 3px 0 rgba(255, 255, 255, 0.66);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
@@ -328,6 +246,24 @@ h2 {
 
 .admin-panel.is-hidden {
   display: none;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+h2,
+p {
+  margin-top: 0;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 1.3rem;
 }
 
 label {
@@ -370,6 +306,14 @@ input:focus {
   color: var(--gold-light);
 }
 
+.main-card,
+.lottery-card,
+.panel {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -379,16 +323,16 @@ input:focus {
 @keyframes ballReveal {
   0% {
     opacity: 0;
-    transform: translate(-90px, -130px) rotate(-240deg) scale(0.58);
+    transform: translate(-3.5vw, -6vw) rotate(-240deg) scale(0.58);
   }
 
   54% {
     opacity: 1;
-    transform: translate(18px, 18px) rotate(46deg) scale(1.13);
+    transform: translate(0.8vw, 0.8vw) rotate(46deg) scale(1.13);
   }
 
   78% {
-    transform: translate(-4px, -16px) rotate(-14deg) scale(0.98);
+    transform: translate(-0.2vw, -0.6vw) rotate(-14deg) scale(0.98);
   }
 
   100% {
@@ -398,7 +342,7 @@ input:focus {
 
 @keyframes settleBounce {
   50% {
-    transform: translateY(-12px) scale(1.04);
+    transform: translateY(-0.6vw) scale(1.04);
   }
 }
 
@@ -415,146 +359,66 @@ input:focus {
 }
 
 @media (max-width: 900px) {
-  .wedding-stage {
-    width: min(100% - 24px, 1500px);
-    margin-left: auto;
-    margin-right: auto;
-    padding: 12px 0;
+  body {
+    overflow-y: auto;
   }
 
-  .show-area {
-    min-height: calc(100vh - 24px);
+  .app {
+    min-height: 100vh;
   }
 
-  .balls-board {
-    grid-template-columns: repeat(3, minmax(88px, 1fr));
+  .lottery-machine-wrapper {
+    left: 50%;
+    top: 23vh;
+    width: min(78vw, 380px);
+    height: min(42vh, 360px);
+    transform: translateX(-50%);
   }
 
-  .lottery-machine {
-    min-height: 250px;
-  }
-}
-
-@media (max-height: 820px) and (min-width: 901px) {
-  .wedding-stage {
-    width: min(820px, calc(100vw - 32px));
-    margin-right: clamp(16px, 4vw, 72px);
-    padding: 16px 0;
+  .result-panel {
+    left: 50%;
+    right: auto;
+    top: 62vh;
+    width: min(90vw, 560px);
+    transform: translateX(-50%);
   }
 
-  .show-area {
-    min-height: calc(100vh - 32px);
-    padding: clamp(16px, 2.2vw, 28px);
-    grid-template-rows: auto minmax(190px, 0.72fr) auto auto;
+  .result-balls {
+    gap: 1.8vw;
+    flex-wrap: wrap;
   }
 
-  .show-area::before {
-    inset: 12px;
-  }
-
-  .eyebrow {
-    margin-bottom: 4px;
-    font-size: 0.78rem;
-  }
-
-  h1 {
-    margin-bottom: 4px;
-    font-size: clamp(3.3rem, 6vw, 5.8rem);
-  }
-
-  .subtitle {
-    font-size: clamp(1rem, 1.5vw, 1.25rem);
-  }
-
-  .lottery-machine {
-    min-height: 210px;
-  }
-
-  .machine-ring {
-    width: min(320px, 38vh, 58vw);
-    border-width: 10px;
-  }
-
-  .ring-line {
-    inset: 42px;
-  }
-
-  .ring-line-b {
-    inset: 76px;
-  }
-
-  .pool-ball {
-    width: clamp(28px, 3.3vw, 42px);
-    height: clamp(28px, 3.3vw, 42px);
-    font-size: 0.78rem;
-  }
-
-  .winner-title {
-    min-height: 42px;
-    margin-bottom: 10px;
-    font-size: clamp(1.35rem, 2.6vw, 2.35rem);
-  }
-
-  .balls-board {
-    width: min(820px, 100%);
-    padding: 12px;
-    gap: 10px;
-  }
-
-  .lotto-ball {
-    font-size: clamp(1.8rem, 3vw, 3.4rem);
-  }
-
-  .controls {
-    margin-top: 14px;
+  .result-ball {
+    width: clamp(48px, 12vw, 72px);
+    height: clamp(48px, 12vw, 72px);
+    font-size: clamp(1.2rem, 5vw, 2rem);
   }
 
   .draw-button {
-    min-height: 58px;
-    font-size: 1.28rem;
+    left: 50%;
+    right: auto;
+    bottom: 5vh;
+    width: min(78vw, 340px);
+    transform: translateX(-50%);
+  }
+
+  .draw-button:hover:not(:disabled) {
+    transform: translateX(-50%) translateY(-2px);
   }
 }
 
 @media (max-height: 700px) and (min-width: 901px) {
-  .show-area {
-    grid-template-rows: auto minmax(160px, 0.58fr) auto auto;
+  .lottery-machine-wrapper {
+    top: 28vh;
+    height: 39vh;
   }
 
-  h1 {
-    font-size: clamp(2.8rem, 5vw, 4.7rem);
-  }
-
-  .lottery-machine {
-    min-height: 180px;
-  }
-
-  .machine-ring {
-    width: min(270px, 34vh, 48vw);
-  }
-
-  .balls-board {
-    width: min(720px, 100%);
+  .result-panel {
+    top: 40vh;
   }
 
   .draw-button {
-    min-height: 52px;
-  }
-}
-
-@media (max-width: 560px) {
-  .show-area {
-    padding: 22px 14px;
-  }
-
-  .machine-ring {
-    width: min(320px, 78vw);
-  }
-
-  .pool-balls {
-    inset: 4px;
-  }
-
-  .balls-board {
-    grid-template-columns: repeat(2, minmax(88px, 1fr));
+    bottom: 6vh;
+    height: 7.5vh;
   }
 }

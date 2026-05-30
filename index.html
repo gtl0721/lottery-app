@@ -7,38 +7,30 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="wedding-stage" aria-labelledby="app-title">
-    <section class="show-area">
-      <header class="ceremony-header">
-        <p class="eyebrow">Timmy &amp; Emily WEDDING LOTTERY</p>
-        <h1 id="app-title">大樂透開獎</h1>
-        <p class="subtitle">贏家只有一位，輸家有好幾位</p>
-      </header>
+  <main class="app" aria-labelledby="app-title">
+    <h1 id="app-title" class="visually-hidden">大樂透開獎</h1>
 
-      <section class="lottery-machine" aria-label="婚禮樂透開獎機">
-        <div class="machine-ring">
-          <div class="ring-line ring-line-a"></div>
-          <div class="ring-line ring-line-b"></div>
-          <div id="poolBalls" class="pool-balls" aria-hidden="true"></div>
-        </div>
-      </section>
-
-      <section class="result-area" aria-live="polite">
-        <p id="winnerTitle" class="winner-title">中獎號碼</p>
-        <div class="balls-board" aria-label="開獎號碼">
-          <div class="lotto-ball">--</div>
-          <div class="lotto-ball">--</div>
-          <div class="lotto-ball">--</div>
-          <div class="lotto-ball">--</div>
-          <div class="lotto-ball">--</div>
-          <div class="lotto-ball">--</div>
-        </div>
-      </section>
-
-      <div class="controls">
-        <button id="drawButton" class="draw-button" type="button">開始開獎</button>
+    <section class="lottery-machine-wrapper" aria-label="婚禮樂透開獎機">
+      <div class="machine-ring">
+        <div class="ring-line ring-line-a"></div>
+        <div class="ring-line ring-line-b"></div>
+        <div id="poolBalls" class="pool-balls" aria-hidden="true"></div>
       </div>
     </section>
+
+    <section class="result-panel" aria-live="polite">
+      <p id="winnerTitle" class="winner-title">中獎號碼</p>
+      <div class="result-balls balls-board" aria-label="開獎號碼">
+        <div class="result-ball lotto-ball">--</div>
+        <div class="result-ball lotto-ball">--</div>
+        <div class="result-ball lotto-ball">--</div>
+        <div class="result-ball lotto-ball">--</div>
+        <div class="result-ball lotto-ball">--</div>
+        <div class="result-ball lotto-ball">--</div>
+      </div>
+    </section>
+
+    <button id="drawButton" class="draw-button" type="button">開始開獎</button>
 
     <aside id="adminPanel" class="admin-panel is-hidden" aria-labelledby="admin-title">
       <div>
