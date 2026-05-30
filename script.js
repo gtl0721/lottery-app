@@ -130,39 +130,6 @@ function keepBallInsideCircle(ball) {
   }
 }
 
-function addSoftBallInteractions() {
-  for (let firstIndex = 0; firstIndex < poolPhysics.balls.length; firstIndex += 1) {
-    for (let secondIndex = firstIndex + 1; secondIndex < poolPhysics.balls.length; secondIndex += 1) {
-      const first = poolPhysics.balls[firstIndex];
-      const second = poolPhysics.balls[secondIndex];
-      const dx = second.x - first.x;
-      const dy = second.y - first.y;
-      const distance = Math.hypot(dx, dy) || 1;
-      const influenceDistance = (first.radius + second.radius) * 1.35;
-
-      if (distance > influenceDistance) {
-        continue;
-      }
-
-      const normalX = dx / distance;
-      const normalY = dy / distance;
-      const tangentX = -normalY;
-      const tangentY = normalX;
-      const strength = (1 - distance / influenceDistance) * 10;
-      const spinKick = Math.sin(poolPhysics.lastTime / 140 + first.phase + second.phase) * strength;
-
-      first.vx -= normalX * strength;
-      first.vy -= normalY * strength;
-      second.vx += normalX * strength;
-      second.vy += normalY * strength;
-      first.vx += tangentX * spinKick;
-      first.vy += tangentY * spinKick;
-      second.vx -= tangentX * spinKick;
-      second.vy -= tangentY * spinKick;
-    }
-  }
-}
-
 function limitBallSpeed(ball, maxSpeed) {
   const speed = Math.hypot(ball.vx, ball.vy);
 
@@ -211,8 +178,6 @@ function animatePoolBalls(time) {
     limitBallSpeed(ball, 300 * poolPhysics.speedBoost);
   });
 
-  addSoftBallInteractions();
-
   poolPhysics.balls.forEach((ball) => {
     ball.x += ball.vx * deltaSeconds * poolPhysics.speedBoost;
     ball.y += ball.vy * deltaSeconds * poolPhysics.speedBoost;
@@ -221,6 +186,7 @@ function animatePoolBalls(time) {
 
   poolPhysics.balls.forEach((ball) => {
     ball.rotation += (ball.vx + ball.vy) * 0.018 * poolPhysics.speedBoost;
+    ball.element.style.zIndex = String(Math.round(ball.y));
     ball.element.style.transform = `translate(-50%, -50%) translate(${ball.x - poolPhysics.centerX}px, ${ball.y - poolPhysics.centerY}px) rotate(${ball.rotation}deg)`;
   });
 
