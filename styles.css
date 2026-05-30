@@ -36,7 +36,7 @@ body {
   height: min(100vh, 56.25vw);
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background-image: url("./assets/cat-lottery-bg.png");
+  background-image: url("./assets/cat-lottery-bg_1.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
