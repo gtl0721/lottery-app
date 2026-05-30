@@ -4,6 +4,7 @@ const DRAW_COUNT = 6;
 const BALL_DELAY_MS = 760;
 const COMPLETE_MESSAGE = "開獎完成，中獎請舉手!!!";
 
+const stage = document.querySelector(".stage");
 const drawButton = document.querySelector("#drawButton");
 const adminInput1 = document.querySelector("#adminNumbers1");
 const adminInput2 = document.querySelector("#adminNumbers2");
@@ -71,13 +72,19 @@ function renderPoolBalls() {
   window.requestAnimationFrame(animatePoolBalls);
 }
 
+function updateStageScale() {
+  const scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+  stage.style.setProperty("--stage-scale", String(scale));
+}
+
 function updatePoolLayout() {
-  const bounds = poolBalls.getBoundingClientRect();
-  poolPhysics.width = bounds.width;
-  poolPhysics.height = bounds.height;
-  poolPhysics.centerX = bounds.width / 2;
-  poolPhysics.centerY = bounds.height / 2;
-  poolPhysics.radius = Math.min(bounds.width, bounds.height) / 2;
+  const width = poolBalls.offsetWidth;
+  const height = poolBalls.offsetHeight;
+  poolPhysics.width = width;
+  poolPhysics.height = height;
+  poolPhysics.centerX = width / 2;
+  poolPhysics.centerY = height / 2;
+  poolPhysics.radius = Math.min(width, height) / 2;
   poolPhysics.airJetX = poolPhysics.centerX;
 
   poolPhysics.balls.forEach((ball, index) => {
@@ -414,8 +421,12 @@ function toggleAdminPanel() {
 }
 
 drawButton.addEventListener("click", startDraw);
+updateStageScale();
 renderPoolBalls();
-window.addEventListener("resize", updatePoolLayout);
+window.addEventListener("resize", () => {
+  updateStageScale();
+  updatePoolLayout();
+});
 
 document.addEventListener("keydown", (event) => {
   if (event.key.toLowerCase() === "m") {
