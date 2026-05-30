@@ -4,6 +4,8 @@ Timmy & Emily wedding lottery app. This is a local, standalone wedding lottery d
 
 No framework, backend, database, or deployment is required.
 
+The project also includes a printable wedding lottery prize card page for guest redemption cards.
+
 ## Features
 
 - Number pool: `1` to `36`.
@@ -26,6 +28,41 @@ No framework, backend, database, or deployment is required.
 - Pool balls move with animated airflow and outer-ring bouncing.
 - Admin panel is hidden by default and can be toggled with the `M` key.
 
+## Wedding Lottery Prize Cards
+
+The printable prize card page is available at:
+
+```text
+file:///D:/lottery-app/cards.html
+```
+
+Or, with VS Code Live Server:
+
+```text
+http://127.0.0.1:5500/cards.html
+```
+
+Prize card details:
+
+- Page title: `婚禮大樂透`
+- Subtitle: `Timmy & Emily Wedding Lottery`
+- Draw date: `2026-06-14`
+- Each guest card contains 6 lottery numbers.
+- Card size is A7.
+- Each A4 print page contains 8 A7 cards.
+- The design uses a red and gold wedding style.
+- The page supports browser printing with the `列印兌獎卡` button or `Ctrl + P`.
+
+Guest number source:
+
+```text
+assets/wedding_lottery_guest_numbers_no_cross_winners.xlsx
+Sheet: 賓客對獎號碼
+Column: C 賓客對獎號碼
+```
+
+The extracted browser data is stored in `cards-data.js`. If the Excel file changes, regenerate `cards-data.js` before printing.
+
 ## Files
 
 ```text
@@ -33,6 +70,12 @@ lottery-app/
 ├── index.html
 ├── styles.css
 ├── script.js
+├── cards.html
+├── cards.css
+├── cards.js
+├── cards-data.js
+├── assets/
+│   └── wedding_lottery_guest_numbers_no_cross_winners.xlsx
 └── README.md
 ```
 
