@@ -6,6 +6,8 @@ No framework, backend, database, or deployment is required.
 
 The project also includes a printable wedding lottery prize card page for guest redemption cards.
 
+For step-by-step instructions in Traditional Chinese, see [USAGE.md](USAGE.md).
+
 ## Features
 
 - Number pool: `1` to `36`.
@@ -74,6 +76,7 @@ lottery-app/
 ├── cards.css
 ├── cards.js
 ├── cards-data.js
+├── USAGE.md
 ├── assets/
 │   └── wedding_lottery_guest_numbers_no_cross_winners.xlsx
 └── README.md
