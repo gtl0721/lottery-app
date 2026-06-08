@@ -24,15 +24,15 @@ body {
   color: var(--white);
   font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
   overflow: hidden;
-  display: grid;
-  place-items: center;
   background: #120508;
 }
 
 .stage,
 .app {
   --stage-scale: 1;
-  position: relative;
+  position: fixed;
+  left: 50%;
+  top: 50%;
   z-index: 1;
   width: 1920px;
   height: 1080px;
@@ -43,7 +43,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
-  transform: scale(var(--stage-scale));
+  transform: translate(-50%, -50%) scale(var(--stage-scale));
   transform-origin: center center;
 }
 
