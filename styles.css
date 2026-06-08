@@ -83,7 +83,7 @@ body {
 .stage-title {
   position: absolute;
   left: 50%;
-  top: 42px;
+  top: 112px;
   width: 980px;
   margin: 0;
   transform: translateX(-50%);
@@ -102,7 +102,7 @@ body {
 .stage-subtitle {
   position: absolute;
   left: 50%;
-  top: 102px;
+  top: 172px;
   width: 900px;
   margin: 0;
   transform: translateX(-50%);
